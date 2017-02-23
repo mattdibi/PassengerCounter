@@ -1,0 +1,10 @@
+
+#!/bin/bash
+source /opt/poky/1.8.2/environment-setup-corei7-64-poky-linux
+$CXX -std=c++11 -o PCN20-25 main.cpp  \
+-lopencv_core \
+-lopencv_highgui \
+-lopencv_imgproc \
+-lopencv_ml \
+-lopencv_objdetect \
+#-lopencv_video

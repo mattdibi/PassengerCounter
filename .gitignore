@@ -1,7 +1,17 @@
-CMakeCache.txt
-CMakeFiles
-CMakeScripts
+# Object files
+*.o
+
+#Others
+*.vscode
+*.mpg
+
+# Ignore cmake related files
+cmake*
+CMake*
 Makefile
-cmake_install.cmake
-install_manifest.txt
-CTestTestfile.cmake
+PCN
+PCN20-25
+
+# Unignore MakeList
+!CMakeLists.txt
+
