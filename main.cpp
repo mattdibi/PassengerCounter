@@ -20,9 +20,9 @@ using namespace std;
 // so I ended up splitting the code using this constant
 //#define XCOMPILER
 
-// Calibration
+// Calibration starting values
 #define THRESHOLD 120
-#define AREA_THRESHOLD 500     // This depends on the camera distance from the passengers
+#define AREA_MIN 7000     // This depends on the camera distance from the passengers
 
 #define X_NEAR 50
 #define Y_NEAR 50
@@ -32,6 +32,11 @@ using namespace std;
 int main(int argc, char * argv[])
 {
     VideoCapture cap;
+
+    // Calibration
+    int whiteThreshold = THRESHOLD;
+    int areaMin = AREA_MIN;
+    int maxPassengerAge = MAX_PASSENGER_AGE;
 
     // Passenger counters
     int cnt_in  = 0;
@@ -142,7 +147,7 @@ int main(int argc, char * argv[])
 
         // --MORPHOLOGICAL TRANSFORMATION
         // Threshold the image
-        threshold(fgMaskMOG2, morphTrans, THRESHOLD, 255, THRESH_BINARY);
+        threshold(fgMaskMOG2, morphTrans, whiteThreshold, 255, THRESH_BINARY);
 
         morphologyEx( morphTrans, morphTrans, MORPH_OPEN, kernelOp );
         morphologyEx( morphTrans, morphTrans, MORPH_CLOSE, kernelCl );
@@ -165,14 +170,14 @@ int main(int argc, char * argv[])
 
             // -- AREA
             // Calculating area
-            //double area0 = contourArea(contours[idx]);
+            //double area1 = contourArea(contours[idx]);
 
             // Approximate area
             vector<Point> approx;
             approxPolyDP(contours[idx], approx, 5, true);
             double area1 = contourArea(approx);
 
-            if(area1 > AREA_THRESHOLD)
+            if(area1 > areaMin)
             {
                 // --TRACKING
                 Moments M = moments(contours[idx]);
@@ -249,7 +254,7 @@ int main(int argc, char * argv[])
 
             // Removing older passengers
             // NB: The age depends on the FPS that the camera is capturing!
-            if(passengers[i].getAge() > MAX_PASSENGER_AGE)
+            if(passengers[i].getAge() > maxPassengerAge)
             {
                 passengers.erase(passengers.begin() +i);
             }
@@ -258,6 +263,11 @@ int main(int argc, char * argv[])
         // --PRINTING INFORMATION
         putText(frame, "Count IN: " + to_string(cnt_in), Point(0,frame.rows - 10) , FONT_HERSHEY_SIMPLEX, 1, Scalar(255,255,255), 2);
         putText(frame, "Count OUT: " + to_string(cnt_out), Point(frame.cols - 310,frame.rows - 10) , FONT_HERSHEY_SIMPLEX, 1, Scalar(255,255,255), 2);
+
+        // --CALIBRATION
+        createTrackbar("Threshold", "Live", &whiteThreshold, 255);
+        createTrackbar("Area min", "Live", &areaMin, 10000);
+        createTrackbar("Passenger age", "Live", &maxPassengerAge, 300);
 
         // Show frame
         imshow("Live",frame);
