@@ -8,6 +8,7 @@
 */
 
 #include <iostream>
+#include <string>
 #include <opencv2/opencv.hpp>
 
 #include "passenger.cpp"
@@ -164,7 +165,7 @@ int main(int argc, char * argv[])
 
             // -- AREA
             // Calculating area
-            double area0 = contourArea(contours[idx]);
+            //double area0 = contourArea(contours[idx]);
 
             // Approximate area
             vector<Point> approx;
@@ -188,7 +189,7 @@ int main(int argc, char * argv[])
 
                 // --PASSENGERS DB UPDATE
                 bool newPassenger = true;
-                for(int i = 0; i < passengers.size(); i++)
+                for(unsigned int i = 0; i < passengers.size(); i++)
                 {
                     // If the object is near a known object
                     if( abs(mc.x - passengers[i].getX()) <= X_NEAR &&
@@ -205,15 +206,15 @@ int main(int argc, char * argv[])
                             if(passengers[i].getLastPoint().x < frame.cols/2 &&
                                passengers[i].getCurrentPoint().x > frame.cols/2)
                             {
-                                cnt_in++;
-                                cout << "\nID: " << passengers[i].getPid() << " crossed going L to R\n";
+                                cnt_out++;
+                                cout << "ID: " << passengers[i].getPid() << " crossed going L to R\n";
                             }
 
                             // Right to left
                             if(passengers[i].getLastPoint().x > frame.cols/2 &&
                                passengers[i].getCurrentPoint().x < frame.cols/2)
                             {
-                                cnt_out++;
+                                cnt_in++;
                                 cout << "ID: " << passengers[i].getPid() << " crossed going R to L\n";
                             }
 
@@ -234,7 +235,7 @@ int main(int argc, char * argv[])
         }
 
         // For every passenger
-        for(int i = 0; i < passengers.size(); i++)
+        for(unsigned int i = 0; i < passengers.size(); i++)
         {
             // -- DRAWING PASSENGER TRAJECTORIES
             if(passengers[i].getTracks().size() > 2)
@@ -255,6 +256,8 @@ int main(int argc, char * argv[])
         }
 
         // --PRINTING INFORMATION
+        putText(frame, "Count IN: " + to_string(cnt_in), Point(0,frame.rows - 10) , FONT_HERSHEY_SIMPLEX, 1, Scalar(255,255,255), 2);
+        putText(frame, "Count OUT: " + to_string(cnt_out), Point(frame.cols - 310,frame.rows - 10) , FONT_HERSHEY_SIMPLEX, 1, Scalar(255,255,255), 2);
 
         // Show frame
         imshow("Live",frame);
