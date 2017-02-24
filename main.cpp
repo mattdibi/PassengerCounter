@@ -197,6 +197,28 @@ int main(int argc, char * argv[])
                         // Update coordinates
                         newPassenger = false;
                         passengers[i].updateCoords(mc);
+
+                        // --COUNTER
+                        if(passengers[i].getTracks().size() > 2)
+                        {
+                            // Left to right
+                            if(passengers[i].getLastPoint().x < frame.cols/2 &&
+                               passengers[i].getCurrentPoint().x > frame.cols/2)
+                            {
+                                cnt_in++;
+                                cout << "\nID: " << passengers[i].getPid() << " crossed going L to R\n";
+                            }
+
+                            // Right to left
+                            if(passengers[i].getLastPoint().x > frame.cols/2 &&
+                               passengers[i].getCurrentPoint().x < frame.cols/2)
+                            {
+                                cnt_out++;
+                                cout << "ID: " << passengers[i].getPid() << " crossed going R to L\n";
+                            }
+
+                        }
+
                         break;
                     }
                 }
@@ -231,6 +253,8 @@ int main(int argc, char * argv[])
                 passengers.erase(passengers.begin() +i);
             }
         }
+
+        // --PRINTING INFORMATION
 
         // Show frame
         imshow("Live",frame);

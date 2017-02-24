@@ -33,6 +33,9 @@ class Passenger {
     vector<Point> getTracks(){return tracks;};
     Scalar getTrackColor(){return trackColor;};
 
+    Point getCurrentPoint(){return tracks[tracks.size()-1];};
+    Point getLastPoint(){return tracks[tracks.size()-2];};
+
     // Methods
     void updateCoords(Point2f newCenter);
     void updateAge(){age++;return;};
