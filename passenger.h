@@ -12,6 +12,8 @@
 using namespace std;
 using namespace cv;
 
+#define MAX_TRACK_DIM 50
+
 class Passenger {
 
   public:
@@ -29,6 +31,7 @@ class Passenger {
     int getAge() {return age;};
 
     vector<Point> getTracks(){return tracks;};
+    Scalar getTrackColor(){return trackColor;};
 
     // Methods
     void updateCoords(Point2f newCenter);
@@ -37,6 +40,8 @@ class Passenger {
     int pid;    // Passenger ID
     Point2f mc; // Mass center
     int age;    // Passenger age
+
     vector<Point> tracks;
+    Scalar trackColor;
 
 };

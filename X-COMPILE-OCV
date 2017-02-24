@@ -7,4 +7,4 @@ $CXX -std=c++11 -o PCN20-25 main.cpp  \
 -lopencv_imgproc \
 -lopencv_ml \
 -lopencv_objdetect \
-#-lopencv_video
+-lopencv_video #PROBLEM HERE

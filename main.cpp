@@ -135,7 +135,7 @@ int main(int argc, char * argv[])
               8);                               //Linetype
 
 	// Flipping image upside down (needed only on my laptop)
-	flip(frame,frame,0);
+	//flip(frame,frame,0);
         
 	// --BACKGROUND SUBTRACTION
 #ifdef XCOMPILER
@@ -214,7 +214,7 @@ int main(int argc, char * argv[])
         {
             if(passengers[i].getTracks().size() > 2)
             {
-                polylines(frame, passengers[i].getTracks(), false, Scalar(255,0,0),3);
+                polylines(frame, passengers[i].getTracks(), false, passengers[i].getTrackColor(),3);
             }
         }
 
