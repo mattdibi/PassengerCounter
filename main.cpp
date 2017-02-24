@@ -105,8 +105,8 @@ int main(int argc, char * argv[])
 
     // --SETUP WINDOWS
     namedWindow("Live",WINDOW_AUTOSIZE);
-    //namedWindow("BackgroundSubtraction", WINDOW_AUTOSIZE);
-    //namedWindow("MorphologicalTransfor", WINDOW_AUTOSIZE);
+    namedWindow("BackgroundSubtraction", WINDOW_AUTOSIZE);
+    namedWindow("MorphologicalTransfor", WINDOW_AUTOSIZE);
 
     // --GRAB AND WRITE LOOP
     cout << "Start grabbing loop\n";
@@ -149,11 +149,12 @@ int main(int argc, char * argv[])
         // Threshold the image
         threshold(fgMaskMOG2, morphTrans, whiteThreshold, 255, THRESH_BINARY);
 
+        // Morphological transformation
         morphologyEx( morphTrans, morphTrans, MORPH_OPEN, kernelOp );
         morphologyEx( morphTrans, morphTrans, MORPH_CLOSE, kernelCl );
 
-        // Blur
-        for ( int i = 1; i < 31; i = i + 2 )
+        // Blurring the image
+        for (int i = 1; i < 31; i = i + 2 )
         { 
             GaussianBlur( morphTrans, morphTrans, Size( i, i ), 0, 0 );
         }
@@ -161,9 +162,8 @@ int main(int argc, char * argv[])
         // --FINDING CONTOURS
         findContours(morphTrans, contours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_NONE);
 
-        //Drawing contours
-        int idx = 0;
-        for( ; idx >= 0; idx = hierarchy[idx][0] )
+        // For every detected object
+        for(int idx = 0 ; idx >= 0; idx = hierarchy[idx][0] )
         {
             // Draw contours for every detected object
             // drawContours( frame, contours, idx, Scalar(0,255,0), 2, 8, hierarchy, 0, Point(0,0) );
@@ -196,7 +196,7 @@ int main(int argc, char * argv[])
                 bool newPassenger = true;
                 for(unsigned int i = 0; i < passengers.size(); i++)
                 {
-                    // If the object is near a known object
+                    // If the passenger is near a known passenger assume they are the same one
                     if( abs(mc.x - passengers[i].getX()) <= X_NEAR &&
                         abs(mc.y - passengers[i].getY()) <= Y_NEAR )
                     {
@@ -245,14 +245,14 @@ int main(int argc, char * argv[])
             }
         }
 
-        // For every passenger
+        // For every passenger in passengers DB
         for(unsigned int i = 0; i < passengers.size(); i++)
         {
             // -- DRAWING PASSENGER TRAJECTORIES
             if(passengers[i].getTracks().size() > 2)
             {
                 polylines(frame, passengers[i].getTracks(), false, passengers[i].getTrackColor(),3);
-                putText(frame, "Pid: " + to_string(passengers[i].getPid()), passengers[i].getCenter() , FONT_HERSHEY_SIMPLEX, 1,passengers[i].getTrackColor() , 2);
+                //putText(frame, "Pid: " + to_string(passengers[i].getPid()), passengers[i].getCenter() , FONT_HERSHEY_SIMPLEX, 1,passengers[i].getTrackColor() , 2);
             }
 
             // --UPDATE PASSENGER STATS
@@ -271,15 +271,15 @@ int main(int argc, char * argv[])
         putText(frame, "Count IN: " + to_string(cnt_in), Point(0,frame.rows - 10) , FONT_HERSHEY_SIMPLEX, 1, Scalar(255,255,255), 2);
         putText(frame, "Count OUT: " + to_string(cnt_out), Point(frame.cols - 310,frame.rows - 10) , FONT_HERSHEY_SIMPLEX, 1, Scalar(255,255,255), 2);
 
-        // --CALIBRATION
+        // --CALIBRATION TRACKBARS
         createTrackbar("Threshold", "Live", &whiteThreshold, 255);
         createTrackbar("Area min", "Live", &areaMin, 10000);
         createTrackbar("Passenger age", "Live", &maxPassengerAge, 300);
 
-        // Show frame
+        // Show videos
         imshow("Live",frame);
-        //imshow("BackgroundSubtraction", fgMaskMOG2);
-        //imshow("MorphologicalTransfor", morphTrans);
+        imshow("BackgroundSubtraction", fgMaskMOG2);
+        imshow("MorphologicalTransfor", morphTrans);
 
         if(waitKey(30) == 27) //wait for 'esc' key press for 30 ms. If 'esc' key is pressed, break loop
         {
