@@ -213,6 +213,9 @@ int main(int argc, char * argv[])
                             {
                                 cnt_out++;
                                 cout << "ID: " << passengers[i].getPid() << " crossed going L to R\n";
+
+                                // Visual feedback
+                                circle(frame, Point(frame.cols - 20, 20), 8, Scalar(0,0,255), CV_FILLED);
                             }
 
                             // Right to left
@@ -221,6 +224,9 @@ int main(int argc, char * argv[])
                             {
                                 cnt_in++;
                                 cout << "ID: " << passengers[i].getPid() << " crossed going R to L\n";
+
+                                // Visual feedback
+                                circle(frame, Point(frame.cols - 20, 20), 8, Scalar(0,255,0), CV_FILLED);
                             }
 
                         }
