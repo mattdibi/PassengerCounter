@@ -20,12 +20,13 @@ using namespace std;
 //#define XCOMPILER
 
 // Calibration
+#define THRESHOLD 120
 #define AREA_THRESHOLD 500     // This depends on the camera distance from the passengers
 
 #define X_NEAR 50
 #define Y_NEAR 50
 
-#define MAX_PASSENGER_AGE 150 // 30 FPS * 5 seconds
+#define MAX_PASSENGER_AGE 90 // 30 FPS * 3 seconds (HP: 30fps camera)
 
 int main(int argc, char * argv[])
 {
@@ -58,9 +59,9 @@ int main(int argc, char * argv[])
 #ifdef XCOMPILER
     pMOG2 = new BackgroundSubtractorMOG2();
 #else
-    int history=1000;
-    double varThreshold=16;
-    bool detectShadows=true;
+    int history = 1000;
+    double varThreshold = 20;
+    bool detectShadows = false;
     pMOG2 = createBackgroundSubtractorMOG2(history, varThreshold, detectShadows);
 #endif
 
@@ -121,14 +122,6 @@ int main(int argc, char * argv[])
             break;
         }
 
-        // --LINE DRAWING
-        // line( frame,                    
-        //       Point(0,frame.rows/2),            //Starting point of the line
-        //       Point(frame.cols,frame.rows/2),   //Ending point of the line
-        //       Scalar(0,0,255),                  //Color
-        //       2,                                //Thickness
-        //       8);                               //Linetype
-
         line( frame,                    
               Point(frame.cols/2,0),            //Starting point of the line
               Point(frame.cols/2,frame.rows),   //Ending point of the line
@@ -136,10 +129,10 @@ int main(int argc, char * argv[])
               2,                                //Thickness
               8);                               //Linetype
 
-	// Flipping image upside down (needed only on my laptop)
-	//flip(frame,frame,0);
+        // Flipping image upside down (needed only on my laptop)
+        //flip(frame,frame,0);
         
-	// --BACKGROUND SUBTRACTION
+	    // --BACKGROUND SUBTRACTION
 #ifdef XCOMPILER
         pMOG2->operator()(frame, fgMaskMOG2, 0.1);
 #else
@@ -148,10 +141,16 @@ int main(int argc, char * argv[])
 
         // --MORPHOLOGICAL TRANSFORMATION
         // Threshold the image
-        threshold(fgMaskMOG2, morphTrans, 110, 255, THRESH_BINARY);
+        threshold(fgMaskMOG2, morphTrans, THRESHOLD, 255, THRESH_BINARY);
 
         morphologyEx( morphTrans, morphTrans, MORPH_OPEN, kernelOp );
         morphologyEx( morphTrans, morphTrans, MORPH_CLOSE, kernelCl );
+
+        // Blur
+        for ( int i = 1; i < 31; i = i + 2 )
+        { 
+            GaussianBlur( morphTrans, morphTrans, Size( i, i ), 0, 0 );
+        }
 
         // --FINDING CONTOURS
         findContours(morphTrans, contours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_NONE);
@@ -160,7 +159,8 @@ int main(int argc, char * argv[])
         int idx = 0;
         for( ; idx >= 0; idx = hierarchy[idx][0] )
         {
-            //drawContours( frame, contours, idx, Scalar(0,255,0), 2, 8, hierarchy, 0, Point(0,0) );
+            // Draw contours for every detected object
+            // drawContours( frame, contours, idx, Scalar(0,255,0), 2, 8, hierarchy, 0, Point(0,0) );
 
             // -- AREA
             // Calculating area
@@ -211,9 +211,10 @@ int main(int argc, char * argv[])
             }
         }
 
-        // -- DRAWING PASSENGER TRAJECTORIES
+        // For every passenger
         for(int i = 0; i < passengers.size(); i++)
         {
+            // -- DRAWING PASSENGER TRAJECTORIES
             if(passengers[i].getTracks().size() > 2)
             {
                 polylines(frame, passengers[i].getTracks(), false, passengers[i].getTrackColor(),3);

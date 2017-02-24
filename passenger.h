@@ -12,7 +12,7 @@
 using namespace std;
 using namespace cv;
 
-#define MAX_TRACK_LENGTH 50
+#define MAX_TRACK_LENGTH 40
 
 class Passenger {
 
@@ -35,7 +35,7 @@ class Passenger {
 
     // Methods
     void updateCoords(Point2f newCenter);
-    void updateAge();
+    void updateAge(){age++;return;};
 
   private:
     int pid;    // Passenger ID

@@ -28,10 +28,3 @@ void Passenger::updateCoords(Point2f newCenter)
 
     return;
 }
-
-void Passenger::updateAge()
-{
-    age++;
-
-    return;
-}
