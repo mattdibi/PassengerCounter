@@ -246,6 +246,7 @@ int main(int argc, char * argv[])
             if(passengers[i].getTracks().size() > 2)
             {
                 polylines(frame, passengers[i].getTracks(), false, passengers[i].getTrackColor(),3);
+                putText(frame, "Pid: " + to_string(passengers[i].getPid()), passengers[i].getCenter() , FONT_HERSHEY_SIMPLEX, 1,passengers[i].getTrackColor() , 2);
             }
 
             // --UPDATE PASSENGER STATS
