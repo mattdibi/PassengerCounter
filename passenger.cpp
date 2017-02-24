@@ -17,10 +17,21 @@ void Passenger::updateCoords(Point2f newCenter)
     tracks.push_back(Point(newCenter.x,newCenter.y));
 
     // If too many tracking points remove older points
-    if(tracks.size() > MAX_TRACK_DIM)
+    if(tracks.size() > MAX_TRACK_LENGTH)
     {
         tracks.erase(tracks.begin());
     }
+
+    // reset age
+    // If the object is being tracked it means its active we don't want it to disappear
+    age = 0;
+
+    return;
+}
+
+void Passenger::updateAge()
+{
+    age++;
 
     return;
 }

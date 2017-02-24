@@ -25,6 +25,8 @@ using namespace std;
 #define X_NEAR 50
 #define Y_NEAR 50
 
+#define MAX_PASSENGER_AGE 150 // 30 FPS * 5 seconds
+
 int main(int argc, char * argv[])
 {
     VideoCapture cap;
@@ -215,6 +217,17 @@ int main(int argc, char * argv[])
             if(passengers[i].getTracks().size() > 2)
             {
                 polylines(frame, passengers[i].getTracks(), false, passengers[i].getTrackColor(),3);
+            }
+
+            // --UPDATE PASSENGER STATS
+            // Updating age
+            passengers[i].updateAge();
+
+            // Removing older passengers
+            // NB: The age depends on the FPS that the camera is capturing!
+            if(passengers[i].getAge() > MAX_PASSENGER_AGE)
+            {
+                passengers.erase(passengers.begin() +i);
             }
         }
 
