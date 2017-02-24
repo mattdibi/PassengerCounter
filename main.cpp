@@ -110,8 +110,8 @@ int main(int argc, char * argv[])
 
     // --SETUP WINDOWS
     namedWindow("Live",WINDOW_AUTOSIZE);
-    namedWindow("BackgroundSubtraction", WINDOW_AUTOSIZE);
-    namedWindow("MorphologicalTransfor", WINDOW_AUTOSIZE);
+    //namedWindow("BackgroundSubtraction", WINDOW_AUTOSIZE);
+    //namedWindow("MorphologicalTransfor", WINDOW_AUTOSIZE);
 
     // --GRAB AND WRITE LOOP
     cout << "Start grabbing loop\n";
@@ -133,7 +133,7 @@ int main(int argc, char * argv[])
             break;
         }
 
-		  // Vertical line
+		// Vertical line
         // line( frame,                    
         //       Point(frame.cols/2,0),            //Starting point of the line
         //       Point(frame.cols/2,frame.rows),   //Ending point of the line
@@ -149,7 +149,7 @@ int main(int argc, char * argv[])
               2,                                //Thickness
               8);                               //Linetype
 
-        // Flipping image upside down (needed only on my laptop)
+        // Flipping image upside down (needed only on my laptop webcam)
         //flip(frame,frame,0);
         
 	    // --BACKGROUND SUBTRACTION
@@ -224,6 +224,7 @@ int main(int argc, char * argv[])
                             // Left to right
                             // if(passengers[i].getLastPoint().x < frame.cols/2 &&
                             //    passengers[i].getCurrentPoint().x > frame.cols/2)
+
                             // Up to down
                             if(passengers[i].getLastPoint().y < frame.rows/2 &&
                                passengers[i].getCurrentPoint().y > frame.rows/2)
@@ -231,7 +232,7 @@ int main(int argc, char * argv[])
                                 cnt_out++;
 
                                 ltime=time(NULL);
-                                cout << "ID: " << passengers[i].getPid() << " crossed going L to R at " << asctime( localtime(&ltime) );
+                                cout << "ID: " << passengers[i].getPid() << " crossed going U to D at " << asctime( localtime(&ltime) );
 
                                 // Visual feedback
                                 circle(frame, Point(frame.cols - 20, 20), 8, Scalar(0,0,255), CV_FILLED);
@@ -240,6 +241,7 @@ int main(int argc, char * argv[])
                             // Right to left
                             // if(passengers[i].getLastPoint().x > frame.cols/2 &&
                             //    passengers[i].getCurrentPoint().x < frame.cols/2)
+
                             // Down to up
                             if(passengers[i].getLastPoint().y > frame.rows/2 &&
                                passengers[i].getCurrentPoint().y < frame.rows/2)
@@ -247,7 +249,7 @@ int main(int argc, char * argv[])
                                 cnt_in++;
 
                                 ltime=time(NULL);
-                                cout << "ID: " << passengers[i].getPid() << " crossed going R to L at " << asctime( localtime(&ltime) );
+                                cout << "ID: " << passengers[i].getPid() << " crossed going D to U at " << asctime( localtime(&ltime) );
 
                                 // Visual feedback
                                 circle(frame, Point(frame.cols - 20, 20), 8, Scalar(0,255,0), CV_FILLED);
@@ -302,8 +304,8 @@ int main(int argc, char * argv[])
 
         // Show videos
         imshow("Live",frame);
-        imshow("BackgroundSubtraction", fgMaskMOG2);
-        imshow("MorphologicalTransfor", morphTrans);
+        //imshow("BackgroundSubtraction", fgMaskMOG2);
+        //imshow("MorphologicalTransfor", morphTrans);
 
         if(waitKey(30) == 27) //wait for 'esc' key press for 30 ms. If 'esc' key is pressed, break loop
         {
