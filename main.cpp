@@ -133,9 +133,18 @@ int main(int argc, char * argv[])
             break;
         }
 
+		  // Vertical line
+        // line( frame,                    
+        //       Point(frame.cols/2,0),            //Starting point of the line
+        //       Point(frame.cols/2,frame.rows),   //Ending point of the line
+        //       Scalar(0,0,255),                  //Color
+        //       2,                                //Thickness
+        //       8);                               //Linetype
+        
+        // Horizontal line     
         line( frame,                    
-              Point(frame.cols/2,0),            //Starting point of the line
-              Point(frame.cols/2,frame.rows),   //Ending point of the line
+              Point(0,frame.rows/2),            //Starting point of the line
+              Point(frame.cols,frame.rows/2),   //Ending point of the line
               Scalar(0,0,255),                  //Color
               2,                                //Thickness
               8);                               //Linetype
@@ -213,8 +222,11 @@ int main(int argc, char * argv[])
                         if(passengers[i].getTracks().size() > 2)
                         {
                             // Left to right
-                            if(passengers[i].getLastPoint().x < frame.cols/2 &&
-                               passengers[i].getCurrentPoint().x > frame.cols/2)
+                            // if(passengers[i].getLastPoint().x < frame.cols/2 &&
+                            //    passengers[i].getCurrentPoint().x > frame.cols/2)
+                            // Up to down
+                            if(passengers[i].getLastPoint().y < frame.rows/2 &&
+                               passengers[i].getCurrentPoint().y > frame.rows/2)
                             {
                                 cnt_out++;
 
@@ -226,8 +238,11 @@ int main(int argc, char * argv[])
                             }
 
                             // Right to left
-                            if(passengers[i].getLastPoint().x > frame.cols/2 &&
-                               passengers[i].getCurrentPoint().x < frame.cols/2)
+                            // if(passengers[i].getLastPoint().x > frame.cols/2 &&
+                            //    passengers[i].getCurrentPoint().x < frame.cols/2)
+                            // Down to up
+                            if(passengers[i].getLastPoint().y > frame.rows/2 &&
+                               passengers[i].getCurrentPoint().y < frame.rows/2)
                             {
                                 cnt_in++;
 
