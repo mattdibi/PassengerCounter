@@ -177,12 +177,12 @@ int main(int argc, char * argv[])
             approxPolyDP(contours[idx], approx, 5, true);
             double area1 = contourArea(approx);
 
+            // If calculated area is big enough begin tracking the object
             if(area1 > areaMin)
             {
                 // --TRACKING
-                Moments M = moments(contours[idx]);
-                
                 // Getting mass center
+                Moments M = moments(contours[idx]);
                 Point2f mc = Point2f( M.m10/M.m00 , M.m01/M.m00 );
 
                 // Getting bounding rectangle
