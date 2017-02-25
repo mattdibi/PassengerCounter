@@ -31,6 +31,7 @@ using namespace std;
 #define WHITE Scalar(255,255,255)
 
 // Calibration starting values
+#define BACKGROUN_SUB_THRESHOLD 50
 #define THRESHOLD 180
 #define BLUR_KSIZE 30
 #define ERODE_AMOUNT 3
@@ -101,7 +102,7 @@ int main(int argc, char * argv[])
     pMOG2 = new BackgroundSubtractorMOG2();
 #else
     int history = 1000;
-    double varThreshold = 20;
+    double varThreshold = BACKGROUN_SUB_THRESHOLD;
     bool detectShadows = false;
     pMOG2 = createBackgroundSubtractorMOG2(history, varThreshold, detectShadows);
 #endif
