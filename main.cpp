@@ -22,14 +22,21 @@ using namespace std;
 // so I ended up splitting the code using this constant
 //#define XCOMPILER
 
+// Constants
+#define MAXRGBVAL 255
+
 // Calibration starting values
-#define THRESHOLD 120
+#define THRESHOLD 180
+#define BLUR_KSIZE 30
+#define ERODE_AMOUNT 3
+#define DILATE_AMOUNT 11
+
 #define AREA_MIN 7000     // This depends on the camera distance from the passengers
 
 #define X_NEAR 50
 #define Y_NEAR 50
 
-#define MAX_PASSENGER_AGE 90 // 30 FPS * 3 seconds (HP: 30fps camera)
+#define MAX_PASSENGER_AGE 30 // 30 FPS * 3 seconds (HP: 30fps camera)
 
 int main(int argc, char * argv[])
 {
@@ -40,6 +47,9 @@ int main(int argc, char * argv[])
 
     // Calibration
     int whiteThreshold = THRESHOLD;
+    int dilateAmount = DILATE_AMOUNT;
+    int erodeAmount = ERODE_AMOUNT;
+    int blur_ksize = BLUR_KSIZE;
     int areaMin = AREA_MIN;
     int maxPassengerAge = MAX_PASSENGER_AGE;
 
@@ -59,10 +69,6 @@ int main(int argc, char * argv[])
     // Contours variables
     vector<vector<Point> > contours;
     vector<Vec4i> hierarchy;
-
-    // Kernels for morphological transformations
-    Mat kernelOp = Mat::ones(3, 3, CV_8U);
-    Mat kernelCl = Mat::ones(11, 11, CV_8U);;
 
     // Background subtraction variables
     Ptr<BackgroundSubtractor> pMOG2; //MOG2 Background subtractor
@@ -110,8 +116,8 @@ int main(int argc, char * argv[])
 
     // --SETUP WINDOWS
     namedWindow("Live",WINDOW_AUTOSIZE);
-    //namedWindow("BackgroundSubtraction", WINDOW_AUTOSIZE);
-    //namedWindow("MorphologicalTransfor", WINDOW_AUTOSIZE);
+    namedWindow("BackgroundSubtraction", WINDOW_AUTOSIZE);
+    namedWindow("MorphologicalTransfor", WINDOW_AUTOSIZE);
 
     // --GRAB AND WRITE LOOP
     cout << "Start grabbing loop\n";
@@ -132,17 +138,13 @@ int main(int argc, char * argv[])
             cerr << "ERROR! Blank frame grabbed\n";
             break;
         }
-
-		// Vertical line
-        // line( frame,                    
-        //       Point(frame.cols/2,0),            //Starting point of the line
-        //       Point(frame.cols/2,frame.rows),   //Ending point of the line
-        //       Scalar(0,0,255),                  //Color
-        //       2,                                //Thickness
-        //       8);                               //Linetype
         
         // Horizontal line     
-        line( frame,                    
+        line( frame,
+              // Vertical line
+              //Point(frame.cols/2,0),            //Starting point of the line
+              //Point(frame.cols/2,frame.rows),   //Ending point of the line  
+              // Horizontal line
               Point(0,frame.rows/2),            //Starting point of the line
               Point(frame.cols,frame.rows/2),   //Ending point of the line
               Scalar(0,0,255),                  //Color
@@ -161,17 +163,20 @@ int main(int argc, char * argv[])
 
         // --MORPHOLOGICAL TRANSFORMATION
         // Threshold the image
-        threshold(fgMaskMOG2, morphTrans, whiteThreshold, 255, THRESH_BINARY);
+        threshold(fgMaskMOG2, morphTrans, whiteThreshold, MAXRGBVAL, THRESH_BINARY);
 
         // Morphological transformation
-        morphologyEx( morphTrans, morphTrans, MORPH_OPEN, kernelOp );
-        morphologyEx( morphTrans, morphTrans, MORPH_CLOSE, kernelCl );
+        // morphologyEx( morphTrans, morphTrans, MORPH_OPEN, kernelOp );
+        // morphologyEx( morphTrans, morphTrans, MORPH_CLOSE, kernelCl );
+
+        // Eroding
+        erode(morphTrans,morphTrans, Mat(Size(erodeAmount,erodeAmount), CV_8UC1));
+
+        // Dilating
+        dilate(morphTrans,morphTrans, Mat(Size(dilateAmount,dilateAmount), CV_8UC1));
 
         // Blurring the image
-        for (int i = 1; i < 31; i = i + 2 )
-        { 
-            GaussianBlur( morphTrans, morphTrans, Size( i, i ), 0, 0 );
-        }
+        blur(morphTrans,morphTrans, Size(blur_ksize,blur_ksize));
 
         // --FINDING CONTOURS
         findContours(morphTrans, contours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_NONE);
@@ -231,7 +236,7 @@ int main(int argc, char * argv[])
                             {
                                 cnt_out++;
 
-                                ltime=time(NULL);
+                                ltime = time(NULL);
                                 cout << "ID: " << passengers[i].getPid() << " crossed going U to D at " << asctime( localtime(&ltime) );
 
                                 // Visual feedback
@@ -248,7 +253,7 @@ int main(int argc, char * argv[])
                             {
                                 cnt_in++;
 
-                                ltime=time(NULL);
+                                ltime = time(NULL);
                                 cout << "ID: " << passengers[i].getPid() << " crossed going D to U at " << asctime( localtime(&ltime) );
 
                                 // Visual feedback
@@ -299,13 +304,16 @@ int main(int argc, char * argv[])
 
         // --CALIBRATION TRACKBARS
         createTrackbar("Threshold", "Live", &whiteThreshold, 255);
+        createTrackbar("Blur", "Live", &blur_ksize, 100);
+        createTrackbar("Erode", "Live", &erodeAmount, 25);
+        createTrackbar("Dilate", "Live", &dilateAmount, 25);
         createTrackbar("Area min", "Live", &areaMin, 10000);
         createTrackbar("Passenger age", "Live", &maxPassengerAge, 300);
 
         // Show videos
         imshow("Live",frame);
-        //imshow("BackgroundSubtraction", fgMaskMOG2);
-        //imshow("MorphologicalTransfor", morphTrans);
+        imshow("BackgroundSubtraction", fgMaskMOG2);
+        imshow("MorphologicalTransfor", morphTrans);
 
         if(waitKey(30) == 27) //wait for 'esc' key press for 30 ms. If 'esc' key is pressed, break loop
         {
