@@ -18,9 +18,6 @@
 using namespace cv;
 using namespace std;
 
-// Display calibration TRACKBARS
-//#define CALIBRATION_ON
-
 // The XCOMPILER uses a different OpenCV version from my main machine
 // so I ended up splitting the code using this constant
 //#define XCOMPILER
@@ -46,8 +43,22 @@ using namespace std;
 
 #define MAX_PASSENGER_AGE 30 // 30 FPS * 3 seconds (HP: 30fps camera)
 
+void displayHelp()
+{
+    cout << "HELP Avalable modes:\n";
+    cout << "              - Without arguments: it opens the default webcam and captures the input stream.\n";
+    cout << "-c            - Calibration mode: it opens the default webcam and display calibration trackbars.\n";
+    cout << "-i            - Intermediate steps: it opens the default webcam and display intermediate image processing steps.\n";
+    cout << "-f <filename> - Input video: it opens the file passed as argument and captures the stream.\n";
+    cout << "-h            - Display help.\n";
+    return;
+}
+
 int main(int argc, char * argv[])
 {
+    bool calibrationOn = false;
+    bool intermediateStep = false;
+    
     VideoCapture cap;
 
     // Timestamp
@@ -107,30 +118,67 @@ int main(int argc, char * argv[])
             return -1;
         }
     }
-    else if(argc == 2)
+    else if(argc >= 2)
     {
-        // Open the video file passed as argument
-        cap.open(argv[1]);
-
-        if(!cap.isOpened())
+        if(!strcmp(argv[1], "-c"))
         {
-            cerr << "ERROR! Unable to open video\n";
-            return -1;
+            calibrationOn = true;
+
+            // Open the default camera using default API
+            cap.open(0);
+
+            if(!cap.isOpened())
+            {
+                cerr << "ERROR! Unable to open camera\n";
+                return -1;
+            }
+        }
+        else if(!strcmp(argv[1], "-i"))
+        {
+            intermediateStep = true;
+
+            // Open the default camera using default API
+            cap.open(0);
+
+            if(!cap.isOpened())
+            {
+                cerr << "ERROR! Unable to open camera\n";
+                return -1;
+            }
+        }
+        else if(!strcmp(argv[1], "-f"))
+        {
+            // Open the video file passed as argument
+            cap.open(argv[2]);
+
+            if(!cap.isOpened())
+            {
+                cerr << "ERROR! Unable to open video\n";
+                return -1;
+            }
+        }
+        else if(!strcmp(argv[1], "-h"))
+        {
+            // --HELP
+            displayHelp();
+            return 0;
         }
     }
     else
     {
         // --HELP
-        cout << "HELP Avalable modes:\n";
-        cout << "           - Without arguments: it opens the default webcam and captures the input stream.\n";
-        cout << "<filename> - Input video: it opens the file passed as argument and captures the stream.\n";
+        displayHelp();
         return 0;
     }
 
     // --SETUP WINDOWS
     namedWindow("Live",WINDOW_AUTOSIZE);
-    //namedWindow("BackgroundSubtraction", WINDOW_AUTOSIZE);
-    //namedWindow("MorphologicalTransfor", WINDOW_AUTOSIZE);
+
+    if(intermediateStep)
+    {
+        namedWindow("BackgroundSubtraction", WINDOW_AUTOSIZE);
+        namedWindow("MorphologicalTransfor", WINDOW_AUTOSIZE);
+    }
 
     // --GRAB AND WRITE LOOP
     cout << "Start grabbing loop\n";
@@ -195,12 +243,12 @@ int main(int argc, char * argv[])
 
             // -- AREA
             // Calculating area
-            //double area1 = contourArea(contours[idx]);
+            double area1 = contourArea(contours[idx]);
 
             // Approximate area
-            vector<Point> approx;
-            approxPolyDP(contours[idx], approx, 5, true);
-            double area1 = contourArea(approx);
+            // vector<Point> approx;
+            // approxPolyDP(contours[idx], approx, 5, true);
+            // double area1 = contourArea(approx);
 
             // If calculated area is big enough begin tracking the object
             if(area1 > areaMin)
@@ -309,24 +357,29 @@ int main(int argc, char * argv[])
         putText(frame, "Count OUT: " + to_string(cnt_out), Point(frame.cols - 310,frame.rows - 10) , FONT_HERSHEY_SIMPLEX, 1, WHITE, 2);
 
         // --CALIBRATION TRACKBARS
-#ifdef CALIBRATION_ON
-        createTrackbar("Threshold", "Live", &whiteThreshold, 255);
-        createTrackbar("Blur", "Live", &blur_ksize, 100);
-        createTrackbar("Erode", "Live", &erodeAmount, 25);
-        createTrackbar("Dilate", "Live", &dilateAmount, 25);
+        if(calibrationOn)
+        {
+            createTrackbar("Threshold", "Live", &whiteThreshold, 255);
+            createTrackbar("Blur", "Live", &blur_ksize, 100);
+            createTrackbar("Erode", "Live", &erodeAmount, 25);
+            createTrackbar("Dilate", "Live", &dilateAmount, 25);
 
-        createTrackbar("xNear", "Live", &xNear, 250);
-        createTrackbar("yNear", "Live", &yNear, 250);
+            createTrackbar("xNear", "Live", &xNear, 250);
+            createTrackbar("yNear", "Live", &yNear, 250);
 
-        createTrackbar("Area min", "Live", &areaMin, 10000);
+            createTrackbar("Area min", "Live", &areaMin, 10000);
 
-        createTrackbar("Passenger age", "Live", &maxPassengerAge, 300);
-#endif
+            createTrackbar("Passenger age", "Live", &maxPassengerAge, 300);
+        }
 
         // Show videos
         imshow("Live",frame);
-        //imshow("BackgroundSubtraction", fgMaskMOG2);
-        //imshow("MorphologicalTransfor", morphTrans);
+
+        if(intermediateStep)
+        {
+            imshow("BackgroundSubtraction", fgMaskMOG2);
+            imshow("MorphologicalTransfor", morphTrans);
+        }
 
         if(waitKey(30) == 27) //wait for 'esc' key press for 30 ms. If 'esc' key is pressed, break loop
         {
