@@ -22,7 +22,7 @@ void Passenger::updateCoords(Point2f newCenter)
         tracks.erase(tracks.begin());
     }
 
-    // reset age
+    // Reset age
     // If the object is being tracked it means its active we don't want it to disappear
     age = 0;
 
