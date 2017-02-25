@@ -18,12 +18,20 @@
 using namespace cv;
 using namespace std;
 
+// Display calibration TRACKBARS
+//#define CALIBRATION_ON
+
 // The XCOMPILER uses a different OpenCV version from my main machine
 // so I ended up splitting the code using this constant
 //#define XCOMPILER
 
 // Constants
 #define MAXRGBVAL 255
+
+#define RED   Scalar(0,0,255)
+#define BLUE  Scalar(255,0,0)
+#define GREEN Scalar(0,255,0)
+#define WHITE Scalar(255,255,255)
 
 // Calibration starting values
 #define THRESHOLD 180
@@ -33,8 +41,8 @@ using namespace std;
 
 #define AREA_MIN 7000     // This depends on the camera distance from the passengers
 
-#define X_NEAR 50
-#define Y_NEAR 50
+#define X_NEAR 100
+#define Y_NEAR 100
 
 #define MAX_PASSENGER_AGE 30 // 30 FPS * 3 seconds (HP: 30fps camera)
 
@@ -50,7 +58,12 @@ int main(int argc, char * argv[])
     int dilateAmount = DILATE_AMOUNT;
     int erodeAmount = ERODE_AMOUNT;
     int blur_ksize = BLUR_KSIZE;
+
     int areaMin = AREA_MIN;
+
+    int xNear = X_NEAR;
+    int yNear = Y_NEAR;
+
     int maxPassengerAge = MAX_PASSENGER_AGE;
 
     // Passenger counters
@@ -116,8 +129,8 @@ int main(int argc, char * argv[])
 
     // --SETUP WINDOWS
     namedWindow("Live",WINDOW_AUTOSIZE);
-    namedWindow("BackgroundSubtraction", WINDOW_AUTOSIZE);
-    namedWindow("MorphologicalTransfor", WINDOW_AUTOSIZE);
+    //namedWindow("BackgroundSubtraction", WINDOW_AUTOSIZE);
+    //namedWindow("MorphologicalTransfor", WINDOW_AUTOSIZE);
 
     // --GRAB AND WRITE LOOP
     cout << "Start grabbing loop\n";
@@ -147,12 +160,9 @@ int main(int argc, char * argv[])
               // Horizontal line
               Point(0,frame.rows/2),            //Starting point of the line
               Point(frame.cols,frame.rows/2),   //Ending point of the line
-              Scalar(0,0,255),                  //Color
+              RED,                              //Color
               2,                                //Thickness
               8);                               //Linetype
-
-        // Flipping image upside down (needed only on my laptop webcam)
-        //flip(frame,frame,0);
         
 	    // --BACKGROUND SUBTRACTION
 #ifdef XCOMPILER
@@ -164,10 +174,6 @@ int main(int argc, char * argv[])
         // --MORPHOLOGICAL TRANSFORMATION
         // Threshold the image
         threshold(fgMaskMOG2, morphTrans, whiteThreshold, MAXRGBVAL, THRESH_BINARY);
-
-        // Morphological transformation
-        // morphologyEx( morphTrans, morphTrans, MORPH_OPEN, kernelOp );
-        // morphologyEx( morphTrans, morphTrans, MORPH_CLOSE, kernelCl );
 
         // Eroding
         erode(morphTrans,morphTrans, Mat(Size(erodeAmount,erodeAmount), CV_8UC1));
@@ -208,16 +214,16 @@ int main(int argc, char * argv[])
                 Rect br = boundingRect(contours[idx]);
 
                 // Drawing mass center and bounding rectangle
-                rectangle( frame, br.tl(), br.br(), Scalar(0,255,0), 2, 8, 0 );
-                circle( frame, mc, 5, Scalar(0,0,255), 2, 8, 0 );
+                rectangle( frame, br.tl(), br.br(), GREEN, 2, 8, 0 );
+                circle( frame, mc, 5, RED, 2, 8, 0 );
 
                 // --PASSENGERS DB UPDATE
                 bool newPassenger = true;
                 for(unsigned int i = 0; i < passengers.size(); i++)
                 {
                     // If the passenger is near a known passenger assume they are the same one
-                    if( abs(mc.x - passengers[i].getX()) <= X_NEAR &&
-                        abs(mc.y - passengers[i].getY()) <= Y_NEAR )
+                    if( abs(mc.x - passengers[i].getX()) <= xNear &&
+                        abs(mc.y - passengers[i].getY()) <= yNear )
                     {
                         // Update coordinates
                         newPassenger = false;
@@ -240,7 +246,7 @@ int main(int argc, char * argv[])
                                 cout << "ID: " << passengers[i].getPid() << " crossed going U to D at " << asctime( localtime(&ltime) );
 
                                 // Visual feedback
-                                circle(frame, Point(frame.cols - 20, 20), 8, Scalar(0,0,255), CV_FILLED);
+                                circle(frame, Point(frame.cols - 20, 20), 8, RED, CV_FILLED);
                             }
 
                             // Right to left
@@ -257,7 +263,7 @@ int main(int argc, char * argv[])
                                 cout << "ID: " << passengers[i].getPid() << " crossed going D to U at " << asctime( localtime(&ltime) );
 
                                 // Visual feedback
-                                circle(frame, Point(frame.cols - 20, 20), 8, Scalar(0,255,0), CV_FILLED);
+                                circle(frame, Point(frame.cols - 20, 20), 8, GREEN, CV_FILLED);
                             }
 
                         }
@@ -299,21 +305,28 @@ int main(int argc, char * argv[])
         }
 
         // --PRINTING INFORMATION
-        putText(frame, "Count IN: " + to_string(cnt_in), Point(0,frame.rows - 10) , FONT_HERSHEY_SIMPLEX, 1, Scalar(255,255,255), 2);
-        putText(frame, "Count OUT: " + to_string(cnt_out), Point(frame.cols - 310,frame.rows - 10) , FONT_HERSHEY_SIMPLEX, 1, Scalar(255,255,255), 2);
+        putText(frame, "Count IN: " + to_string(cnt_in), Point(0,frame.rows - 10) , FONT_HERSHEY_SIMPLEX, 1, WHITE, 2);
+        putText(frame, "Count OUT: " + to_string(cnt_out), Point(frame.cols - 310,frame.rows - 10) , FONT_HERSHEY_SIMPLEX, 1, WHITE, 2);
 
         // --CALIBRATION TRACKBARS
+#ifdef CALIBRATION_ON
         createTrackbar("Threshold", "Live", &whiteThreshold, 255);
         createTrackbar("Blur", "Live", &blur_ksize, 100);
         createTrackbar("Erode", "Live", &erodeAmount, 25);
         createTrackbar("Dilate", "Live", &dilateAmount, 25);
+
+        createTrackbar("xNear", "Live", &xNear, 250);
+        createTrackbar("yNear", "Live", &yNear, 250);
+
         createTrackbar("Area min", "Live", &areaMin, 10000);
+
         createTrackbar("Passenger age", "Live", &maxPassengerAge, 300);
+#endif
 
         // Show videos
         imshow("Live",frame);
-        imshow("BackgroundSubtraction", fgMaskMOG2);
-        imshow("MorphologicalTransfor", morphTrans);
+        //imshow("BackgroundSubtraction", fgMaskMOG2);
+        //imshow("MorphologicalTransfor", morphTrans);
 
         if(waitKey(30) == 27) //wait for 'esc' key press for 30 ms. If 'esc' key is pressed, break loop
         {
