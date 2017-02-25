@@ -9,7 +9,6 @@
 
 #include <iostream>
 #include <string>
-#include <ctime>
 
 #include <opencv2/opencv.hpp>
 
@@ -61,9 +60,6 @@ int main(int argc, char * argv[])
     bool intermediateStep = false;
     
     VideoCapture cap;
-
-    // Timestamp
-    time_t ltime; /* calendar time */
 
     // Calibration
     int whiteThreshold = THRESHOLD;
@@ -291,8 +287,7 @@ int main(int argc, char * argv[])
                             {
                                 cnt_out++;
 
-                                ltime = time(NULL);
-                                cout << "ID: " << passengers[i].getPid() << " crossed going U to D at " << asctime( localtime(&ltime) );
+                                cout << "ID: " << passengers[i].getPid() << " crossed going U to D.\n";
 
                                 // Visual feedback
                                 circle(frame, Point(frame.cols - 20, 20), 8, RED, CV_FILLED);
@@ -308,8 +303,7 @@ int main(int argc, char * argv[])
                             {
                                 cnt_in++;
 
-                                ltime = time(NULL);
-                                cout << "ID: " << passengers[i].getPid() << " crossed going D to U at " << asctime( localtime(&ltime) );
+                                cout << "ID: " << passengers[i].getPid() << " crossed going D to U.\n";
 
                                 // Visual feedback
                                 circle(frame, Point(frame.cols - 20, 20), 8, GREEN, CV_FILLED);
