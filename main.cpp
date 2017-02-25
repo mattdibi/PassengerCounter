@@ -282,8 +282,8 @@ int main(int argc, char * argv[])
                             //    passengers[i].getCurrentPoint().x > frame.cols/2)
 
                             // Up to down
-                            if(passengers[i].getLastPoint().y < frame.rows/2 &&
-                               passengers[i].getCurrentPoint().y > frame.rows/2)
+                            if( (passengers[i].getLastPoint().y < frame.rows/2 && passengers[i].getCurrentPoint().y >= frame.rows/2) ||
+                                (passengers[i].getLastPoint().y <= frame.rows/2 && passengers[i].getCurrentPoint().y > frame.rows/2) )
                             {
                                 cnt_out++;
 
@@ -298,8 +298,8 @@ int main(int argc, char * argv[])
                             //    passengers[i].getCurrentPoint().x < frame.cols/2)
 
                             // Down to up
-                            if(passengers[i].getLastPoint().y > frame.rows/2 &&
-                               passengers[i].getCurrentPoint().y < frame.rows/2)
+                            if( (passengers[i].getLastPoint().y > frame.rows/2 && passengers[i].getCurrentPoint().y <= frame.rows/2) ||
+                                (passengers[i].getLastPoint().y >= frame.rows/2 && passengers[i].getCurrentPoint().y < frame.rows/2) )
                             {
                                 cnt_in++;
 
