@@ -19,7 +19,6 @@ using namespace std;
 
 // The XCOMPILER uses a different OpenCV version from my main machine
 // so I ended up splitting the code using this constant
-//#define XCOMPILER
 
 // Constants
 #define MAXRGBVAL 255
@@ -94,14 +93,10 @@ int main(int argc, char * argv[])
     // Background subtraction variables
     Ptr<BackgroundSubtractor> pMOG2; //MOG2 Background subtractor
 
-#ifdef XCOMPILER
-    pMOG2 = new BackgroundSubtractorMOG2();
-#else
     int history = 1000;
     double varThreshold = BACKGROUN_SUB_THRESHOLD;
     bool detectShadows = false;
     pMOG2 = createBackgroundSubtractorMOG2(history, varThreshold, detectShadows);
-#endif
 
     // --INITIALIZE VIDEOCAPTURE
     if(argc == 1)
@@ -210,11 +205,7 @@ int main(int argc, char * argv[])
               8);                               //Linetype
         
 	    // --BACKGROUND SUBTRACTION
-#ifdef XCOMPILER
-        pMOG2->operator()(frame, fgMaskMOG2, 0.1);
-#else
         pMOG2->apply(frame, fgMaskMOG2, 0.1);
-#endif
 
         // --MORPHOLOGICAL TRANSFORMATION
         // Threshold the image
