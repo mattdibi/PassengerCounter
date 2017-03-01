@@ -8,4 +8,4 @@ $CXX -std=c++11 -o PCN20-25 main.cpp  \
 -lopencv_ml \
 -lopencv_objdetect \
 -lopencv_videoio \
--lopencv_video
+-lopencv_video \
