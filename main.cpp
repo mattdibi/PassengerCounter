@@ -9,6 +9,7 @@
 
 #include <iostream>
 #include <string>
+#include <chrono>
 
 #include <opencv2/opencv.hpp>
 
@@ -16,6 +17,7 @@
 
 using namespace cv;
 using namespace std;
+using namespace std::chrono;
 
 // The XCOMPILER uses a different OpenCV version from my main machine
 // so I ended up splitting the code using this constant
@@ -97,6 +99,15 @@ int main(int argc, char * argv[])
     double varThreshold = BACKGROUN_SUB_THRESHOLD;
     bool detectShadows = false;
     pMOG2 = createBackgroundSubtractorMOG2(history, varThreshold, detectShadows);
+
+    // Execution time
+    duration<double> timeBackgroundSub;
+    duration<double> timeThrehold;
+    duration<double> timeErode;
+    duration<double> timeDilate;
+    duration<double> timeBlur;
+    duration<double> timeFindContours;
+    bool firstLoop = true;
 
     // --INITIALIZE VIDEOCAPTURE
     if(argc == 1)
@@ -203,25 +214,97 @@ int main(int argc, char * argv[])
               RED,                              //Color
               2,                                //Thickness
               8);                               //Linetype
-        
+
 	    // --BACKGROUND SUBTRACTION
+        high_resolution_clock::time_point t1 = high_resolution_clock::now();
+
         pMOG2->apply(frame, fgMaskMOG2, 0.1);
+
+        high_resolution_clock::time_point t2 = high_resolution_clock::now();
+
+        if(firstLoop)
+            timeBackgroundSub = duration_cast<duration<double>>(t2 - t1);
+        else
+        {
+            timeBackgroundSub += duration_cast<duration<double>>(t2 - t1);
+            timeBackgroundSub = timeBackgroundSub/2;
+        }
 
         // --MORPHOLOGICAL TRANSFORMATION
         // Threshold the image
+        high_resolution_clock::time_point t3 = high_resolution_clock::now();
+
         threshold(fgMaskMOG2, morphTrans, whiteThreshold, MAXRGBVAL, THRESH_BINARY);
 
+        high_resolution_clock::time_point t4 = high_resolution_clock::now();
+
+        if(firstLoop)
+            timeThrehold = duration_cast<duration<double>>(t4 - t3);
+        else
+        {
+            timeThrehold += duration_cast<duration<double>>(t4 - t3);
+            timeThrehold = timeThrehold/2;
+        }
+
         // Eroding
+        high_resolution_clock::time_point t5 = high_resolution_clock::now();
+
         erode(morphTrans,morphTrans, Mat(Size(erodeAmount,erodeAmount), CV_8UC1));
 
+        high_resolution_clock::time_point t6 = high_resolution_clock::now();
+
+        if(firstLoop)
+            timeErode = duration_cast<duration<double>>(t6 - t5);
+        else
+        {
+            timeErode += duration_cast<duration<double>>(t6 - t5);
+            timeErode = timeErode/2;
+        }
+
         // Dilating
+        high_resolution_clock::time_point t7 = high_resolution_clock::now();
+
         dilate(morphTrans,morphTrans, Mat(Size(dilateAmount,dilateAmount), CV_8UC1));
 
+        high_resolution_clock::time_point t8 = high_resolution_clock::now();
+
+        if(firstLoop)
+            timeDilate = duration_cast<duration<double>>(t8 - t7);
+        else
+        {
+            timeDilate += duration_cast<duration<double>>(t8 - t7);
+            timeDilate = timeDilate/2;
+        }
+
         // Blurring the image
+        high_resolution_clock::time_point t9 = high_resolution_clock::now();
+
         blur(morphTrans,morphTrans, Size(blur_ksize,blur_ksize));
 
+        high_resolution_clock::time_point t10 = high_resolution_clock::now();
+
+        if(firstLoop)
+            timeBlur = duration_cast<duration<double>>(t10 - t9);
+        else
+        {
+            timeBlur += duration_cast<duration<double>>(t10 - t9);
+            timeBlur = timeBlur/2;
+        }
+
         // --FINDING CONTOURS
+        high_resolution_clock::time_point t11 = high_resolution_clock::now();
+
         findContours(morphTrans, contours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_NONE);
+
+        high_resolution_clock::time_point t12 = high_resolution_clock::now();
+
+        if(firstLoop)
+            timeFindContours = duration_cast<duration<double>>(t12 - t11);
+        else
+        {
+            timeFindContours += duration_cast<duration<double>>(t12 - t11);
+            timeFindContours = timeFindContours/2;
+        }
 
         // For every detected object
         for(int idx = 0 ; idx >= 0; idx = hierarchy[idx][0] )
@@ -372,7 +455,17 @@ int main(int argc, char * argv[])
             cout << "esc key is pressed by user" << endl; 
             break;
         }
+
+        firstLoop = false;
     }
+
+    cout << "Execution times:\n";
+    cout << "Bacground sub = " << timeBackgroundSub.count() << " seconds\n";
+    cout << "Threshold     = " << timeThrehold.count() << " seconds\n";
+    cout << "Erode         = " << timeErode.count() << " seconds\n";
+    cout << "Dilate        = " << timeDilate.count() << " seconds\n";
+    cout << "Blur          = " << timeBlur.count() << " seconds\n";
+    cout << "FindContours  = " << timeFindContours.count() << " seconds\n";
 
     destroyAllWindows(); 
     return 0;
