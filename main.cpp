@@ -181,7 +181,7 @@ int main(int argc, char * argv[])
     // --GRAB AND WRITE LOOP
     cout << "Start grabbing loop\n";
 
-    for(;;)
+    while(1)
     {
         // Wait for a frame from camera/video and store it into frame
         bool bSuccess = cap.read(frame);
