@@ -37,12 +37,15 @@ using namespace std::chrono;
 #define ERODE_AMOUNT 3
 #define DILATE_AMOUNT 11
 
-#define AREA_MIN 7000     // This depends on the camera distance from the passengers
+#define AREA_MIN 10000     // This depends on the camera distance from the passengers
 
 #define X_NEAR 100
 #define Y_NEAR 100
 
 #define MAX_PASSENGER_AGE 30 // 30 FPS * 3 seconds (HP: 30fps camera)
+
+#define MAX_1PASS_AREA 30000
+#define MAX_2PASS_AREA 60000
 
 void displayHelp()
 {
@@ -240,15 +243,15 @@ int main(int argc, char * argv[])
 
             // -- AREA
             // Calculating area
-            double area1 = contourArea(contours[idx]);
+            double areaCurrentObject = contourArea(contours[idx]);
 
             // Approximate area
             // vector<Point> approx;
             // approxPolyDP(contours[idx], approx, 5, true);
-            // double area1 = contourArea(approx);
+            // double areaCurrentObject = contourArea(approx);
 
             // If calculated area is big enough begin tracking the object
-            if(area1 > areaMin)
+            if(areaCurrentObject > areaMin)
             {
                 // --TRACKING
                 // Getting mass center
@@ -261,6 +264,14 @@ int main(int argc, char * argv[])
                 // Drawing mass center and bounding rectangle
                 rectangle( frame, br.tl(), br.br(), GREEN, 2, 8, 0 );
                 circle( frame, mc, 5, RED, 2, 8, 0 );
+
+                // Debugging multiple passenger count
+                if(areaCurrentObject > MAX_1PASS_AREA && areaCurrentObject < MAX_2PASS_AREA)
+                    putText(frame, "Area: " + to_string(areaCurrentObject) + " = 2 PASSENGERS", mc, FONT_HERSHEY_SIMPLEX, 0.5, RED, 2);
+                else if(areaCurrentObject > MAX_2PASS_AREA)
+                    putText(frame, "Area: " + to_string(areaCurrentObject) + " = 3 PASSENGERS", mc, FONT_HERSHEY_SIMPLEX, 0.5, RED, 2);
+                else
+                    putText(frame, "Area: " + to_string(areaCurrentObject) + " = 1 PASSENGERS", mc, FONT_HERSHEY_SIMPLEX, 0.5, RED, 2);
 
                 // --PASSENGERS DB UPDATE
                 bool newPassenger = true;
@@ -285,8 +296,15 @@ int main(int argc, char * argv[])
                             if( (passengers[i].getLastPoint().y < frame.rows/2 && passengers[i].getCurrentPoint().y >= frame.rows/2) ||
                                 (passengers[i].getLastPoint().y <= frame.rows/2 && passengers[i].getCurrentPoint().y > frame.rows/2) )
                             {
-                                cnt_out++;
+                                // Counting multiple passenger depending on area size
+                                if (areaCurrentObject > MAX_1PASS_AREA && areaCurrentObject < MAX_2PASS_AREA)
+                                    cnt_out += 2;
+                                else if (areaCurrentObject > MAX_2PASS_AREA)
+                                    cnt_out += 3;
+                                else
+                                    cnt_out++;
 
+                                // Logging count
                                 cout << "ID: " << passengers[i].getPid() << " crossed going U to D.\n";
 
                                 // Visual feedback
@@ -301,8 +319,15 @@ int main(int argc, char * argv[])
                             if( (passengers[i].getLastPoint().y > frame.rows/2 && passengers[i].getCurrentPoint().y <= frame.rows/2) ||
                                 (passengers[i].getLastPoint().y >= frame.rows/2 && passengers[i].getCurrentPoint().y < frame.rows/2) )
                             {
-                                cnt_in++;
+                                // Counting multiple passenger depending on area size
+                                if (areaCurrentObject > MAX_1PASS_AREA && areaCurrentObject < MAX_2PASS_AREA)
+                                    cnt_in += 2;
+                                else if (areaCurrentObject > MAX_2PASS_AREA)
+                                    cnt_in += 3;
+                                else
+                                    cnt_in++;
 
+                                // Logging count
                                 cout << "ID: " << passengers[i].getPid() << " crossed going D to U.\n";
 
                                 // Visual feedback
