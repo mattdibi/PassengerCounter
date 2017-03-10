@@ -19,7 +19,7 @@ class Passenger {
   public:
 
     // Constructor
-    Passenger(int id, Point2f center, int age);
+    Passenger(int id, Point2f center, int newAge);
 
     // Selectors
     int getPid() {return pid;};
