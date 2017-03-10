@@ -286,7 +286,7 @@ int main(int argc, char * argv[])
                         passengers[i].updateCoords(mc);
 
                         // --COUNTER
-                        if(passengers[i].getTracks().size() > 2)
+                        if(passengers[i].getTracks().size() > 1)
                         {
                             // Left to right
                             // if(passengers[i].getLastPoint().x < frame.cols/2 &&
@@ -354,7 +354,7 @@ int main(int argc, char * argv[])
         for(unsigned int i = 0; i < passengers.size(); i++)
         {
             // -- DRAWING PASSENGER TRAJECTORIES
-            if(passengers[i].getTracks().size() > 2)
+            if(passengers[i].getTracks().size() > 1)
             {
                 polylines(frame, passengers[i].getTracks(), false, passengers[i].getTrackColor(),2);
                 //putText(frame, "Pid: " + to_string(passengers[i].getPid()), passengers[i].getCenter(), FONT_HERSHEY_SIMPLEX, 0.5, passengers[i].getTrackColor(), 2);
