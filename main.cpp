@@ -266,12 +266,12 @@ int main(int argc, char * argv[])
                 circle( frame, mc, 5, RED, 2, 8, 0 );
 
                 // Debugging multiple passenger count
-                if(areaCurrentObject > MAX_1PASS_AREA && areaCurrentObject < MAX_2PASS_AREA)
-                    putText(frame, "Area: " + to_string(areaCurrentObject) + " = 2 PASSENGERS", mc, FONT_HERSHEY_SIMPLEX, 0.5, RED, 2);
-                else if(areaCurrentObject > MAX_2PASS_AREA)
-                    putText(frame, "Area: " + to_string(areaCurrentObject) + " = 3 PASSENGERS", mc, FONT_HERSHEY_SIMPLEX, 0.5, RED, 2);
-                else
-                    putText(frame, "Area: " + to_string(areaCurrentObject) + " = 1 PASSENGERS", mc, FONT_HERSHEY_SIMPLEX, 0.5, RED, 2);
+                // if(areaCurrentObject > MAX_1PASS_AREA && areaCurrentObject < MAX_2PASS_AREA)
+                //     putText(frame, "Area: " + to_string(areaCurrentObject) + " = 2 PASSENGERS", mc, FONT_HERSHEY_SIMPLEX, 0.5, RED, 2);
+                // else if(areaCurrentObject > MAX_2PASS_AREA)
+                //     putText(frame, "Area: " + to_string(areaCurrentObject) + " = 3 PASSENGERS", mc, FONT_HERSHEY_SIMPLEX, 0.5, RED, 2);
+                // else
+                //     putText(frame, "Area: " + to_string(areaCurrentObject) + " = 1 PASSENGERS", mc, FONT_HERSHEY_SIMPLEX, 0.5, RED, 2);
 
                 // --PASSENGERS DB UPDATE
                 bool newPassenger = true;
