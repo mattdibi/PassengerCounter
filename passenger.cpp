@@ -1,24 +1,20 @@
 #include "passenger.h"
 
-Passenger::Passenger(int id, Point2f center, int newAge = 0)
+Passenger::Passenger(int id, Point center, int newAge = 0)
 {
     pid = id;
-    mc = center;
     age = newAge;
 
-    tracks.push_back(Point(center.x,center.y));
+    tracks.push_back(center);
     trackColor = Scalar(rand() % 255, rand() % 255, rand() % 255);
 }
 
-void Passenger::updateCoords(Point2f newCenter)
+void Passenger::updateCoords(Point newCenter)
 {
-    mc = newCenter;
-
-    tracks.push_back(Point(newCenter.x,newCenter.y));
+    tracks.push_back(newCenter);
 
     // If too many tracking points remove older points
-    if(tracks.size() > MAX_TRACK_LENGTH)
-    {
+    if(tracks.size() > MAX_TRACK_LENGTH) {
         tracks.erase(tracks.begin());
     }
 

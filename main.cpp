@@ -292,8 +292,8 @@ int main(int argc, char * argv[])
                 for(unsigned int i = 0; i < passengers.size(); i++)
                 {
                     // If the passenger is near a known passenger assume they are the same one
-                    if( abs(mc.x - passengers[i].getX()) <= xNear &&
-                        abs(mc.y - passengers[i].getY()) <= yNear )
+                    if( abs(mc.x - passengers[i].getCurrentPoint().x) <= xNear &&
+                        abs(mc.y - passengers[i].getCurrentPoint().y) <= yNear )
                     {
                         // Update coordinates
                         newPassenger = false;

@@ -19,15 +19,10 @@ class Passenger {
   public:
 
     // Constructor
-    Passenger(int id, Point2f center, int newAge);
+    Passenger(int id, Point center, int newAge);
 
     // Selectors
     int getPid() {return pid;};
-
-    Point2f getCenter() {return mc;};
-    float getX(){return mc.x;};
-    float getY(){return mc.y;};
-
     int getAge() {return age;};
 
     vector<Point> getTracks(){return tracks;};
@@ -37,12 +32,11 @@ class Passenger {
     Point getLastPoint(){return tracks[tracks.size()-2];};
 
     // Methods
-    void updateCoords(Point2f newCenter);
+    void updateCoords(Point newCenter);
     void updateAge(){age++;return;};
 
   private:
     int pid;    // Passenger ID
-    Point2f mc; // Mass center
     int age;    // Passenger age
 
     vector<Point> tracks;
