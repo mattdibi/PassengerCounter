@@ -33,7 +33,7 @@ using namespace std::chrono;
 // Calibration starting values
 #define BACKGROUN_SUB_THRESHOLD 50
 #define THRESHOLD 180
-#define BLUR_KSIZE 40
+#define BLUR_KSIZE 10
 #define ERODE_AMOUNT 3
 #define DILATE_AMOUNT 11
 
@@ -236,7 +236,7 @@ int main(int argc, char * argv[])
         findContours(morphTrans, contours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_NONE);
 
         // For every detected object
-        for(int idx = 0 ; idx >= 0; idx = hierarchy[idx][0] )
+        for(unsigned int idx = 0; idx < contours.size(); idx++)
         {
             // Draw contours for every detected object
             // drawContours( frame, contours, idx, Scalar(0,255,0), 2, 8, hierarchy, 0, Point(0,0) );
