@@ -271,12 +271,9 @@ int main(int argc, char * argv[])
             if(areaCurrentObject > areaMin)
             {
                 // --TRACKING
-                // Getting mass center
-                Moments M = moments(contours[idx]);
-                Point2f mc = Point2f( M.m10/M.m00 , M.m01/M.m00 );
-
                 // Getting bounding rectangle
                 Rect br = boundingRect(contours[idx]);
+                Point2f mc = Point2f((int)(br.x + br.width/2) ,(int)(br.y + br.height/2) );
 
                 // Drawing mass center and bounding rectangle
                 rectangle( frame, br.tl(), br.br(), GREEN, 2, 8, 0 );
