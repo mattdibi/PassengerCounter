@@ -184,6 +184,11 @@ int main(int argc, char * argv[])
     // --GRAB AND WRITE LOOP
     cout << "Start grabbing loop\n";
 
+    // Framerate calculation variables
+    int frames = 0; 
+    float time = 0, fps = 0;
+    auto tf0 = std::chrono::high_resolution_clock::now();
+
     while(1)
     {
         // Wait for a frame from camera/video and store it into frame
@@ -199,6 +204,18 @@ int main(int argc, char * argv[])
         if (frame.empty()) {
             cerr << "ERROR! Blank frame grabbed\n";
             break;
+        }
+
+        // Framerate
+        auto tf1 = std::chrono::high_resolution_clock::now();
+        time += std::chrono::duration<float>(tf1-tf0).count();
+        tf0 = tf1;
+        ++frames;
+        if(time > 0.5f)
+        {
+            fps = frames / time;
+            frames = 0;
+            time = 0;
         }
 
         //-- PERFORMANCE ESTMATION
@@ -373,6 +390,8 @@ int main(int argc, char * argv[])
         }
 
         // --PRINTING INFORMATION
+        putText(frame, "FPS: " + to_string(fps), Point(0,  15) , FONT_HERSHEY_SIMPLEX, 0.5, RED, 2);
+
         putText(frame, "Count IN: " + to_string(cnt_in), Point(0,frame.rows - 10) , FONT_HERSHEY_SIMPLEX, 1, WHITE, 2);
         putText(frame, "Count OUT: " + to_string(cnt_out), Point(frame.cols - 310,frame.rows - 10) , FONT_HERSHEY_SIMPLEX, 1, WHITE, 2);
 
