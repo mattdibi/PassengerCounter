@@ -32,7 +32,7 @@ using namespace std::chrono;
 
 // Calibration starting values
 #define BACKGROUN_SUB_THRESHOLD 50
-#define THRESHOLD 180
+#define THRESHOLD 100
 #define BLUR_KSIZE 10
 #define ERODE_AMOUNT 3
 #define DILATE_AMOUNT 11
@@ -100,7 +100,7 @@ int main(int argc, char * argv[])
 
     int history = 1000;
     double varThreshold = BACKGROUN_SUB_THRESHOLD;
-    bool detectShadows = false;
+    bool detectShadows = true;
     pMOG2 = createBackgroundSubtractorMOG2(history, varThreshold, detectShadows);
 
     // Execution time
