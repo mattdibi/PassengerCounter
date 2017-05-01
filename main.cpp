@@ -392,8 +392,8 @@ int main(int argc, char * argv[])
         // --PRINTING INFORMATION
         putText(frame, "FPS: " + to_string(fps), Point(0,  15) , FONT_HERSHEY_SIMPLEX, 0.5, RED, 2);
 
-        putText(frame, "Count IN: " + to_string(cnt_in), Point(0,frame.rows - 10) , FONT_HERSHEY_SIMPLEX, 1, WHITE, 2);
-        putText(frame, "Count OUT: " + to_string(cnt_out), Point(frame.cols - 310,frame.rows - 10) , FONT_HERSHEY_SIMPLEX, 1, WHITE, 2);
+        putText(frame, "Count IN: "  + to_string(cnt_in), Point(0,frame.rows - 30) , FONT_HERSHEY_SIMPLEX, 0.5, WHITE, 2);
+        putText(frame, "Count OUT: " + to_string(cnt_out), Point(0, frame.rows - 10) , FONT_HERSHEY_SIMPLEX, 0.5, WHITE, 2);
 
         // --CALIBRATION TRACKBARS
         if(calibrationOn)
