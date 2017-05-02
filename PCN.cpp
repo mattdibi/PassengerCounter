@@ -81,6 +81,7 @@ void PCN::count()
     vector<Vec4i> hierarchy;
 
     // Calibration
+    int learningRate = LEARNINGRATE;
     int whiteThreshold = THRESHOLD;
     int dilateAmount = DILATE_AMOUNT;
     int erodeAmount = ERODE_AMOUNT;
@@ -156,9 +157,9 @@ void PCN::count()
         
 	    // --BACKGROUND SUBTRACTION
 #ifndef ReliaGate
-        pMOG2->operator()(color, fgMaskMOG2, 0.1);
+        pMOG2->operator()(color, fgMaskMOG2, (float)(learningRate/100.0));
 #else
-        pMOG2->apply(color, fgMaskMOG2, 0.1);
+        pMOG2->apply(color, fgMaskMOG2, (float)(learningRate/100));
 #endif
 
         // --MORPHOLOGICAL TRANSFORMATION
@@ -303,6 +304,7 @@ void PCN::count()
         // --CALIBRATION TRACKBARS
         if(calibrationOn && displayColor)
         {
+            createTrackbar("Learning reate  ", "Color threadID: " + threadID, &learningRate, 100);
             createTrackbar("White threshold ", "Color threadID: " + threadID, &whiteThreshold, 400);
             createTrackbar("Blur [matrix size]", "Color threadID: " + threadID, &blur_ksize, 100);
             createTrackbar("xNear [pixels]", "Color threadID: " + threadID, &xNear, IMAGEWIDTH);

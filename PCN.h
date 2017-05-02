@@ -44,9 +44,10 @@ using namespace std::chrono;
 
 // Calibration starting values
 #define BACKGROUN_SUB_THRESHOLD 50
+#define LEARNINGRATE 70
 #define THRESHOLD 100
 #define ERODE_AMOUNT 3
-#define DILATE_AMOUNT 11
+#define DILATE_AMOUNT 6
 #define BLUR_KSIZE 10           // [matrix size]
 #define AREA_MIN 10000          // [pixels^2]: This depends on the camera distance from the passengers
 #define X_NEAR 100              // [pixels]
