@@ -1,7 +1,7 @@
 
 #!/bin/bash
 source /opt/poky/2.2.1/environment-setup-corei7-64-poky-linux
-$CXX -std=c++11 -o PCN20-25 main.cpp  \
+$CXX -std=c++11 -lX11 -pthread -o PCN20-25 main.cpp  \
 -lopencv_core \
 -lopencv_highgui \
 -lopencv_imgproc \

@@ -7,6 +7,9 @@
 
 */
 
+#ifndef PASSENGER_H
+#define PASSENGER_H
+
 #include <opencv2/opencv.hpp>
 
 using namespace std;
@@ -43,3 +46,5 @@ class Passenger {
     Scalar trackColor;
 
 };
+
+#endif
