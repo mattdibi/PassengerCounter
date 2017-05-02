@@ -9,7 +9,6 @@ void displayHelp()
 {
     cout << "*****************************************\n";
     cout << "* COMMAND HELP: \n";
-    cout << "* 0 - 5: selecting camera presets\n";
     cout << "* r: resetting counters\n";
     cout << "* p: get passenger count\n";
     cout << "* c: toggle display color\n";

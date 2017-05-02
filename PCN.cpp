@@ -5,18 +5,17 @@
 
 PCN::PCN(int device)
 {
-    // Open the default camera using default API
     cap.open(device);
 
     int history = 1000;
     double varThreshold = BACKGROUN_SUB_THRESHOLD;
     bool detectShadows = true;
 
-    #ifdef ReliaGate
+#ifdef ReliaGate
     pMOG2 = createBackgroundSubtractorMOG2(history, varThreshold, detectShadows);
-    #else
+#else
     pMOG2 = new BackgroundSubtractorMOG2(history, varThreshold, detectShadows);
-    #endif
+#endif
 }
 
 void PCN::toggleCalibration()
@@ -156,11 +155,11 @@ void PCN::count()
         }
         
 	    // --BACKGROUND SUBTRACTION
-        #ifndef ReliaGate
+#ifndef ReliaGate
         pMOG2->operator()(color, fgMaskMOG2, 0.1);
-        #else
+#else
         pMOG2->apply(color, fgMaskMOG2, 0.1);
-        #endif
+#endif
 
         // --MORPHOLOGICAL TRANSFORMATION
         // Threshold the image
@@ -192,11 +191,6 @@ void PCN::count()
             // If calculated area is big enough begin tracking the object
             if(areaCurrentObject > areaMin)
             {
-                // --TRACKING
-                // Getting mass center
-                // Moments M = moments(contours[idx]);
-                // Point2f mc = Point2f( M.m10/M.m00 , M.m01/M.m00 );
-
                 // Getting bounding rectangle
                 Rect br = boundingRect(contours[idx]);
                 Point2f mc = Point2f((int)(br.x + br.width/2) ,(int)(br.y + br.height/2) );
@@ -204,14 +198,6 @@ void PCN::count()
                 // Drawing mass center and bounding rectangle
                 rectangle( color, br.tl(), br.br(), GREEN, 2, 8, 0 );
                 circle( color, mc, 5, RED, 2, 8, 0 );
-
-                // Debugging multiple passenger count + calibration
-                // if(areaCurrentObject > MAX_1PASS_AREA && areaCurrentObject < MAX_2PASS_AREA)
-                //     putText(color, "Area: " + to_string(areaCurrentObject) + " = 2 PASSENGERS", mc, FONT_HERSHEY_SIMPLEX, 0.5, RED, 2);
-                // else if(areaCurrentObject > MAX_2PASS_AREA)
-                //     putText(color, "Area: " + to_string(areaCurrentObject) + " = 3 PASSENGERS", mc, FONT_HERSHEY_SIMPLEX, 0.5, RED, 2);
-                // else
-                //     putText(color, "Area: " + to_string(areaCurrentObject) + " = 1 PASSENGERS", mc, FONT_HERSHEY_SIMPLEX, 0.5, RED, 2);
 
                 // --PASSENGERS DB UPDATE
                 bool newPassenger = true;
@@ -240,9 +226,6 @@ void PCN::count()
                                 else
                                     cnt_out++;
 
-                                // Logging count
-                                // cout << "ID: " << passengers[i].getPid() << " crossed going U to D.\n";
-
                                 // Visual feedback
                                 circle(color, Point(color.cols - 20, 20), 8, RED, CV_FILLED);
                             }
@@ -258,9 +241,6 @@ void PCN::count()
                                     cnt_in += 3;
                                 else
                                     cnt_in++;
-
-                                // Logging count
-                                // cout << "ID: " << passengers[i].getPid() << " crossed going D to U.\n";
 
                                 // Visual feedback
                                 circle(color, Point(color.cols - 20, 20), 8, GREEN, CV_FILLED);
