@@ -107,10 +107,10 @@ void PCN::count()
 
     if(saveVideo)
     {
-        Size S(IMAGEHEIGHT, IMAGEWIDTH);
-        outputVideoColor.open(threadID + "-color.avi", CV_FOURCC('M','J','P','G'), FRAMERATE, S);
-        outputVideoBacksub.open(threadID + "-backsub.avi", CV_FOURCC('M','J','P','G'), FRAMERATE, S);
-        outputVideoDenoise.open(threadID + "-denoise.avi", CV_FOURCC('M','J','P','G'), FRAMERATE, S);
+        // Size S(IMAGEHEIGHT, IMAGEWIDTH);
+        // outputVideoColor.open(threadID + "-color.avi", CV_FOURCC('M','J','P','G'), FRAMERATE, S);
+        // outputVideoBacksub.open(threadID + "-backsub.avi", CV_FOURCC('M','J','P','G'), FRAMERATE, S);
+        // outputVideoDenoise.open(threadID + "-denoise.avi", CV_FOURCC('M','J','P','G'), FRAMERATE, S);
     }
 
     // --GRAB AND WRITE LOOP

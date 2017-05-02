@@ -40,9 +40,10 @@ int main(int argc, char * argv[])
     if(argc >= 2)
     {
         if(!strcmp(argv[1], "-s")) {
-            for(int i = 0; i < deviceNumber; i++) {
-                counters[i]->setSaveVideo(true);
-            }
+            cout << "The video recording function is disabled.\n";
+            // for(int i = 0; i < deviceNumber; i++) {
+            //     counters[i]->setSaveVideo(true);
+            // }
         }
     }
 
