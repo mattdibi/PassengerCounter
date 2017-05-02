@@ -157,7 +157,7 @@ void PCN::count()
         
 	    // --BACKGROUND SUBTRACTION
 #ifndef ReliaGate
-        pMOG2->operator()(color, fgMaskMOG2, (float)(learningRate/100.0));
+        pMOG2->operator()(color, fgMaskMOG2, (float)(learningRate/10000.0));
 #else
         pMOG2->apply(color, fgMaskMOG2, (float)(learningRate/100));
 #endif
@@ -304,7 +304,7 @@ void PCN::count()
         // --CALIBRATION TRACKBARS
         if(calibrationOn && displayColor)
         {
-            createTrackbar("Learning reate  ", "Color threadID: " + threadID, &learningRate, 100);
+            createTrackbar("Learning reate  ", "Color threadID: " + threadID, &learningRate, 1000);
             createTrackbar("White threshold ", "Color threadID: " + threadID, &whiteThreshold, 400);
             createTrackbar("Blur [matrix size]", "Color threadID: " + threadID, &blur_ksize, 100);
             createTrackbar("xNear [pixels]", "Color threadID: " + threadID, &xNear, IMAGEWIDTH);

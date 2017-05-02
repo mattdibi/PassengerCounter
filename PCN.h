@@ -44,7 +44,7 @@ using namespace std::chrono;
 
 // Calibration starting values
 #define BACKGROUN_SUB_THRESHOLD 50
-#define LEARNINGRATE 70
+#define LEARNINGRATE 10
 #define THRESHOLD 100
 #define ERODE_AMOUNT 3
 #define DILATE_AMOUNT 6
