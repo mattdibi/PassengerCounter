@@ -50,8 +50,8 @@ using namespace std::chrono;
 #define DILATE_AMOUNT 6
 #define BLUR_KSIZE 10           // [matrix size]
 #define AREA_MIN 10000          // [pixels^2]: This depends on the camera distance from the passengers
-#define X_NEAR 100              // [pixels]
-#define Y_NEAR 100              // [pixels]
+#define X_NEAR 40              // [pixels]
+#define Y_NEAR 90              // [pixels]
 #define MAX_PASSENGER_AGE 2     // [seconds]
 
 #define MAX_1PASS_AREA 30000    // [pixels^2]
