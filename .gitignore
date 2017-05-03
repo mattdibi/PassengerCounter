@@ -4,6 +4,7 @@
 #Others
 *.vscode
 *.mpg
+*.avi
 
 # Ignore cmake related files
 cmake*
