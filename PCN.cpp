@@ -159,7 +159,7 @@ void PCN::count()
 #ifndef ReliaGate
         pMOG2->operator()(color, fgMaskMOG2, (float)(learningRate/10000.0));
 #else
-        pMOG2->apply(color, fgMaskMOG2, (float)(learningRate/100));
+        pMOG2->apply(color, fgMaskMOG2, (float)(learningRate/10000.0));
 #endif
 
         // --MORPHOLOGICAL TRANSFORMATION
