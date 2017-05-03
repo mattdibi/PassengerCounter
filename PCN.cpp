@@ -326,11 +326,7 @@ void PCN::count()
         // -- SAVING VIDEOS
         if(saveVideo)
         {
-            // Needed to display the video correctly. God only knows why...
-            Mat tmp = Mat((int) cap.get(CV_CAP_PROP_FRAME_HEIGHT), (int) cap.get(CV_CAP_PROP_FRAME_WIDTH), CV_8UC3);
-            tmp = color.clone();
-            outputVideoColor.write(tmp);
-
+            outputVideoColor.write(color);
             // outputVideoBacksub.write(fgMaskMOG2);
             // outputVideoDenoise.write(denoisedMat);
         }
