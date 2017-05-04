@@ -170,7 +170,7 @@ void PCN::count()
         erode(morphTrans,morphTrans, Mat(Size(erodeAmount,erodeAmount), CV_8UC1));
 
         // Dilating
-        dilate(morphTrans,morphTrans, Mat(Size(dilateAmount,dilateAmount), CV_8UC1));
+        // dilate(morphTrans,morphTrans, Mat(Size(dilateAmount,dilateAmount), CV_8UC1));
 
         // Blurring the image
         blur(morphTrans,morphTrans, Size(blur_ksize,blur_ksize));
@@ -220,11 +220,11 @@ void PCN::count()
                                 (passengers[i].getLastPoint().y <= color.rows/2 && passengers[i].getCurrentPoint().y > color.rows/2) )
                             {
                                 // Counting multiple passenger depending on area size
-                                if (areaCurrentObject > MAX_1PASS_AREA && areaCurrentObject < MAX_2PASS_AREA)
-                                    cnt_out += 2;
-                                else if (areaCurrentObject > MAX_2PASS_AREA)
-                                    cnt_out += 3;
-                                else
+                                // if (areaCurrentObject > MAX_1PASS_AREA && areaCurrentObject < MAX_2PASS_AREA)
+                                //     cnt_out += 2;
+                                // else if (areaCurrentObject > MAX_2PASS_AREA)
+                                //     cnt_out += 3;
+                                // else
                                     cnt_out++;
 
                                 // Visual feedback
@@ -236,11 +236,11 @@ void PCN::count()
                                 (passengers[i].getLastPoint().y >= color.rows/2 && passengers[i].getCurrentPoint().y < color.rows/2) )
                             {
                                 // Counting multiple passenger depending on area size
-                                if (areaCurrentObject > MAX_1PASS_AREA && areaCurrentObject < MAX_2PASS_AREA)
-                                    cnt_in += 2;
-                                else if (areaCurrentObject > MAX_2PASS_AREA)
-                                    cnt_in += 3;
-                                else
+                                // if (areaCurrentObject > MAX_1PASS_AREA && areaCurrentObject < MAX_2PASS_AREA)
+                                //     cnt_in += 2;
+                                // else if (areaCurrentObject > MAX_2PASS_AREA)
+                                //     cnt_in += 3;
+                                // else
                                     cnt_in++;
 
                                 // Visual feedback
