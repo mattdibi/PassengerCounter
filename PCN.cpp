@@ -270,7 +270,7 @@ void PCN::count()
             if(passengers[i].getTracks().size() > 1)
             {
                 polylines(color, passengers[i].getTracks(), false, passengers[i].getTrackColor(),2);
-                putText(color, "Pid: " + to_string(passengers[i].getPid()), passengers[i].getCurrentPoint(), FONT_HERSHEY_SIMPLEX, 0.5, passengers[i].getTrackColor(), 2);
+                // putText(color, "Pid: " + to_string(passengers[i].getPid()), passengers[i].getCurrentPoint(), FONT_HERSHEY_SIMPLEX, 0.5, passengers[i].getTrackColor(), 2);
             }
 
             // --UPDATE PASSENGER STATS
