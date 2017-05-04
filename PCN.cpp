@@ -73,8 +73,8 @@ void PCN::count()
 
     // Videos
     VideoWriter outputVideoColor;
-    // VideoWriter outputVideoBacksub;
-    // VideoWriter outputVideoDenoise;
+    VideoWriter outputVideoBacksub;
+    VideoWriter outputVideoDenoise;
 
     // Contours variables
     vector<vector<Point> > contours;
@@ -109,8 +109,8 @@ void PCN::count()
     {
         Size S = Size((int) cap.get(CV_CAP_PROP_FRAME_WIDTH), (int) cap.get(CV_CAP_PROP_FRAME_HEIGHT));
         outputVideoColor.open(threadID + "-color.avi", CV_FOURCC('M','J','P','G'), FRAMERATE, S, true);
-        // outputVideoBacksub.open(threadID + "-backsub.avi", CV_FOURCC('M','J','P','G'), FRAMERATE, S, true);
-        // outputVideoDenoise.open(threadID + "-denoise.avi", CV_FOURCC('M','J','P','G'), FRAMERATE, S, true);
+        outputVideoBacksub.open(threadID + "-backsub.avi", CV_FOURCC('M','J','P','G'), FRAMERATE, S, true);
+        outputVideoDenoise.open(threadID + "-denoise.avi", CV_FOURCC('M','J','P','G'), FRAMERATE, S, true);
     }
 
     // --GRAB AND WRITE LOOP
@@ -326,9 +326,13 @@ void PCN::count()
         // -- SAVING VIDEOS
         if(saveVideo)
         {
+            // Conversions
+            cvtColor(fgMaskMOG2, fgMaskMOG2, CV_GRAY2BGR);
+            cvtColor(denoisedMat, denoisedMat, CV_GRAY2BGR);
+
             outputVideoColor.write(color);
-            // outputVideoBacksub.write(fgMaskMOG2);
-            // outputVideoDenoise.write(denoisedMat);
+            outputVideoBacksub.write(fgMaskMOG2);
+            outputVideoDenoise.write(denoisedMat);
         }
 
         // --PERFORMANCE ESTMATION
@@ -364,8 +368,8 @@ void PCN::count()
     if(saveVideo)
     {
         outputVideoColor.release();
-        // outputVideoBacksub.release();
-        // outputVideoDenoise.release();
+        outputVideoBacksub.release();
+        outputVideoDenoise.release();
     }
         
     // Disable streams
