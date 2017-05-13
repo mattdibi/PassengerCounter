@@ -220,6 +220,7 @@ void PCN::count()
                         // Update coordinates
                         newPassenger = false;
                         passengers[i].updateCoords(mc);
+                        passengers[i].resetAge();
 
                         // --COUNTER
                         if(passengers[i].getTracks().size() > 1)

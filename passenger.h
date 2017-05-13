@@ -37,6 +37,7 @@ class Passenger {
     // Methods
     void updateCoords(Point newCenter);
     void updateAge(){age++;return;};
+    void resetAge(){age = 0; return;};
 
   private:
     int pid;    // Passenger ID
