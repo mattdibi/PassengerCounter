@@ -43,6 +43,8 @@ int main(int argc, char * argv[])
             for(int i = 0; i < deviceNumber; i++) {
                 counters[i]->setSaveVideo(true);
             }
+        } else { 
+            cout << "Unknown option. Defaulted to normal mode." << endl;
         }
     }
 
