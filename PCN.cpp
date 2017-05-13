@@ -200,6 +200,15 @@ void PCN::count()
                 rectangle( color, br.tl(), br.br(), GREEN, 2, 8, 0 );
                 circle( color, mc, 5, RED, 2, 8, 0 );
 
+                // Debugging multiple passenger count + calibration
+                // if(areaCurrentObject > MAX_1PASS_AREA && areaCurrentObject < MAX_2PASS_AREA)
+                //     putText(color, "Area: " + to_string(areaCurrentObject) + " = 2 PASSENGERS", mc, FONT_HERSHEY_SIMPLEX, 0.5, RED, 2);
+                // else if(areaCurrentObject > MAX_2PASS_AREA)
+                //     putText(color, "Area: " + to_string(areaCurrentObject) + " = 3 PASSENGERS", mc, FONT_HERSHEY_SIMPLEX, 0.5, RED, 2);
+                // else
+                //     putText(color, "Area: " + to_string(areaCurrentObject) + " = 1 PASSENGERS", mc, FONT_HERSHEY_SIMPLEX, 0.5, RED, 2);
+                
+
                 // --PASSENGERS DB UPDATE
                 bool newPassenger = true;
                 for(unsigned int i = 0; i < passengers.size(); i++)
