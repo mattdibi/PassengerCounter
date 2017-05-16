@@ -287,6 +287,11 @@ void PCN::count()
             // Updating age
             passengers[i].updateAge();
 
+            // If passenger is outside field of view update coords with last known position.
+            // This prevents false positive counts.
+            if(passengers[i].getAge() > 1)
+                passengers[i].updateCoords(passengers[i].getCurrentPoint());
+
             // Removing older passengers
             // NB: The age depends on the FPS that the camera is capturing!
             if(passengers[i].getAge() > (maxPassengerAge * fps) )
