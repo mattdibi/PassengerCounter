@@ -49,13 +49,13 @@ using namespace std::chrono;
 #define ERODE_AMOUNT 3
 #define DILATE_AMOUNT 6
 #define BLUR_KSIZE 10           // [matrix size]
-#define AREA_MIN 10000          // [pixels^2]: This depends on the camera distance from the passengers
+#define AREA_MIN 60000          // [pixels^2]: This depends on the camera distance from the passengers
 #define X_NEAR 40              // [pixels]
 #define Y_NEAR 90              // [pixels]
 #define MAX_PASSENGER_AGE 2     // [seconds]
 
-#define MAX_1PASS_AREA 30000    // [pixels^2]
-#define MAX_2PASS_AREA 60000    // [pixels^2]
+#define MAX_1PASS_AREA 100000    // [pixels^2]
+#define MAX_2PASS_AREA 150000    // [pixels^2]
 
 class PCN {
 

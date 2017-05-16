@@ -87,6 +87,8 @@ void PCN::count()
     int erodeAmount = ERODE_AMOUNT;
     int blur_ksize = BLUR_KSIZE;
     int areaMin = AREA_MIN;
+    int max1PassArea = MAX_1PASS_AREA;
+    int max2PassArea = MAX_2PASS_AREA;
     int xNear = X_NEAR;
     int yNear = Y_NEAR;
     int maxPassengerAge = MAX_PASSENGER_AGE;
@@ -201,9 +203,9 @@ void PCN::count()
                 circle( color, mc, 5, RED, 2, 8, 0 );
 
                 // Debugging multiple passenger count + calibration
-                // if(areaCurrentObject > MAX_1PASS_AREA && areaCurrentObject < MAX_2PASS_AREA)
+                // if(areaCurrentObject > max1PassArea && areaCurrentObject < max2PassArea)
                 //     putText(color, "Area: " + to_string(areaCurrentObject) + " = 2 PASSENGERS", mc, FONT_HERSHEY_SIMPLEX, 0.5, RED, 2);
-                // else if(areaCurrentObject > MAX_2PASS_AREA)
+                // else if(areaCurrentObject > max2PassArea)
                 //     putText(color, "Area: " + to_string(areaCurrentObject) + " = 3 PASSENGERS", mc, FONT_HERSHEY_SIMPLEX, 0.5, RED, 2);
                 // else
                 //     putText(color, "Area: " + to_string(areaCurrentObject) + " = 1 PASSENGERS", mc, FONT_HERSHEY_SIMPLEX, 0.5, RED, 2);
@@ -230,11 +232,11 @@ void PCN::count()
                                 (passengers[i].getLastPoint().y <= color.rows/2 && passengers[i].getCurrentPoint().y > color.rows/2) )
                             {
                                 // Counting multiple passenger depending on area size
-                                // if (areaCurrentObject > MAX_1PASS_AREA && areaCurrentObject < MAX_2PASS_AREA)
-                                //     cnt_out += 2;
-                                // else if (areaCurrentObject > MAX_2PASS_AREA)
-                                //     cnt_out += 3;
-                                // else
+                                if (areaCurrentObject > max1PassArea && areaCurrentObject < max2PassArea)
+                                    cnt_out += 2;
+                                else if (areaCurrentObject > max2PassArea)
+                                    cnt_out += 3;
+                                else
                                     cnt_out++;
 
                                 // Visual feedback
@@ -246,11 +248,11 @@ void PCN::count()
                                 (passengers[i].getLastPoint().y >= color.rows/2 && passengers[i].getCurrentPoint().y < color.rows/2) )
                             {
                                 // Counting multiple passenger depending on area size
-                                // if (areaCurrentObject > MAX_1PASS_AREA && areaCurrentObject < MAX_2PASS_AREA)
-                                //     cnt_in += 2;
-                                // else if (areaCurrentObject > MAX_2PASS_AREA)
-                                //     cnt_in += 3;
-                                // else
+                                if (areaCurrentObject > max1PassArea && areaCurrentObject < max2PassArea)
+                                    cnt_in += 2;
+                                else if (areaCurrentObject > max2PassArea)
+                                    cnt_in += 3;
+                                else
                                     cnt_in++;
 
                                 // Visual feedback
@@ -324,7 +326,9 @@ void PCN::count()
             createTrackbar("Blur [matrix size]", "Color threadID: " + threadID, &blur_ksize, 100);
             createTrackbar("xNear [pixels]", "Color threadID: " + threadID, &xNear, IMAGEWIDTH);
             createTrackbar("yNear [pixels]", "Color threadID: " + threadID, &yNear, IMAGEHEIGHT);
-            createTrackbar("Area min [pixels^2]", "Color threadID: " + threadID, &areaMin, 100000);
+            createTrackbar("Area min [pixels^2]", "Color threadID: " + threadID, &areaMin, 200000);
+            createTrackbar("Area max2 [pixels^2]", "Color threadID: " + threadID, &max1PassArea, 200000);
+            createTrackbar("Area max3 [pixels^2]", "Color threadID: " + threadID, &max2PassArea, 200000);
             createTrackbar("Passenger age [seconds]", "Color threadID: " + threadID, &maxPassengerAge, 30);
         }
 
