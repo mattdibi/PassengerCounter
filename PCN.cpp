@@ -196,19 +196,19 @@ void PCN::count()
             {
                 // Getting bounding rectangle
                 Rect br = boundingRect(contours[idx]);
-                Point2f mc = Point2f((int)(br.x + br.width/2) ,(int)(br.y + br.height/2) );
+                Point2f objCenter = Point2f((int)(br.x + br.width/2) ,(int)(br.y + br.height/2) );
 
                 // Drawing mass center and bounding rectangle
                 rectangle( color, br.tl(), br.br(), GREEN, 2, 8, 0 );
-                circle( color, mc, 5, RED, 2, 8, 0 );
+                circle( color, objCenter, 5, RED, 2, 8, 0 );
 
                 // Debugging multiple passenger count + calibration
                 // if(areaCurrentObject > max1PassArea && areaCurrentObject < max2PassArea)
-                //     putText(color, "Area: " + to_string(areaCurrentObject) + " = 2 PASSENGERS", mc, FONT_HERSHEY_SIMPLEX, 0.5, RED, 2);
+                //     putText(color, "Area: " + to_string(areaCurrentObject) + " = 2 PASSENGERS", objCenter, FONT_HERSHEY_SIMPLEX, 0.5, RED, 2);
                 // else if(areaCurrentObject > max2PassArea)
-                //     putText(color, "Area: " + to_string(areaCurrentObject) + " = 3 PASSENGERS", mc, FONT_HERSHEY_SIMPLEX, 0.5, RED, 2);
+                //     putText(color, "Area: " + to_string(areaCurrentObject) + " = 3 PASSENGERS", objCenter, FONT_HERSHEY_SIMPLEX, 0.5, RED, 2);
                 // else
-                //     putText(color, "Area: " + to_string(areaCurrentObject) + " = 1 PASSENGERS", mc, FONT_HERSHEY_SIMPLEX, 0.5, RED, 2);
+                //     putText(color, "Area: " + to_string(areaCurrentObject) + " = 1 PASSENGERS", objCenter, FONT_HERSHEY_SIMPLEX, 0.5, RED, 2);
                 
 
                 // --PASSENGERS DB UPDATE
@@ -216,12 +216,12 @@ void PCN::count()
                 for(unsigned int i = 0; i < passengers.size(); i++)
                 {
                     // If the passenger is near a known passenger assume they are the same one
-                    if( abs(mc.x - passengers[i].getCurrentPoint().x) <= xNear &&
-                        abs(mc.y - passengers[i].getCurrentPoint().y) <= yNear )
+                    if( abs(objCenter.x - passengers[i].getCurrentPoint().x) <= xNear &&
+                        abs(objCenter.y - passengers[i].getCurrentPoint().y) <= yNear )
                     {
                         // Update coordinates
                         newPassenger = false;
-                        passengers[i].updateCoords(mc);
+                        passengers[i].updateCoords(objCenter);
                         passengers[i].resetAge();
 
                         // --COUNTER
@@ -268,7 +268,7 @@ void PCN::count()
                 // If wasn't near any known object is a new passenger
                 if(newPassenger)
                 {
-                    Passenger p(pid, mc);
+                    Passenger p(pid, objCenter);
                     passengers.push_back(p);
                     pid++;
                 }
