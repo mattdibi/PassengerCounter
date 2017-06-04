@@ -21,3 +21,35 @@ Video acquisition:
 For the development I've used:
 * Yocto Project
 * OpenCV
+
+## User guide
+
+**Build C++ version**
+```sh
+$ cmake .
+$ make
+$ ./PCN
+```
+
+**Build C++ poky version**
+```sh
+$ ./X-COMPILE-OCV
+```
+### Options
+```sh
+    - Without arguments: it opens the default webcam and captures the input stream.
+-s  - Capture mode: it saves the color stream on file.
+```
+
+### Runtime commands
+```
+r: resetting counters
+p: get passenger count
+c: toggle display color
+C: toggle display calibration
+b: toggle display background subtraction view
+d: toggle display denoised view
+q: exit program
+h: display help message
+```
+
