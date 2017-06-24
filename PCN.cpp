@@ -172,7 +172,7 @@ void PCN::count()
         erode(morphTrans,morphTrans, Mat(Size(erodeAmount,erodeAmount), CV_8UC1));
 
         // Dilating
-        // dilate(morphTrans,morphTrans, Mat(Size(dilateAmount,dilateAmount), CV_8UC1));
+        dilate(morphTrans,morphTrans, Mat(Size(dilateAmount,dilateAmount), CV_8UC1));
 
         // Blurring the image
         blur(morphTrans,morphTrans, Size(blur_ksize,blur_ksize));
